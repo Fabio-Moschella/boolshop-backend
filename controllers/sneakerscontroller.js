@@ -1,10 +1,38 @@
 const connection = require("../data/db.js");
 // INDEX
 
-const index = (req, res) => {
+const indexAll = (req, res) => {
   const sqlSneaker = "SELECT * FROM sneakers";
 
   connection.query(sqlSneaker, (err, results) => {
+    if (err) return res.status(500).json({ error: "Database query failed" });
+
+    res.json({
+      results,
+    });
+  });
+};
+
+const indexLatest = (req, res) => {
+  const sqlLatestSneaker = `SELECT *
+FROM sneakers
+ORDER BY date_of_arrival DESC 
+LIMIT 5`;
+  connection.query(sqlLatestSneaker, (err, results) => {
+    if (err) return res.status(500).json({ error: "Database query failed" });
+
+    res.json({
+      results,
+    });
+  });
+};
+
+const indexCheapest = (req, res) => {
+  const sqlCheapestSneaker = `SELECT *
+FROM sneakers
+ORDER BY price ASC
+LIMIT 5`;
+  connection.query(sqlCheapestSneaker, (err, results) => {
     if (err) return res.status(500).json({ error: "Database query failed" });
 
     res.json({
@@ -31,4 +59,4 @@ const show = (req, res) => {
   });
 };
 
-module.exports = { index, show };
+module.exports = { indexAll, indexLatest, indexCheapest, show };

@@ -2,10 +2,10 @@ require("dotenv").config();
 const express = require("express");
 const app = express();
 const port = process.env.BACKEND_PORT;
-const url = process.env.LOCAL_URL;
+
 const clientUrl = process.env.CLIENT_URL;
 
-const sneakerRouter = require("./routers/sneakers.js");
+const sneakerRouter = require("./routers/sneakersRouter.js");
 const errorHandler = require("./middleware/errorhandler.js");
 const cors = require("cors");
 
