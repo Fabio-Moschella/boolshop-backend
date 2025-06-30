@@ -15,9 +15,9 @@ const transporter = nodemailer.createTransport({
     // Tipicamente 587 (con STARTTLS) o 465 (con SSL/TLS).
     port: process.env.SMTP_PORT,
 
-    // 'secure': Indica se la connessione deve usare connessione crittografata tramite SSL/TLS (Secure Sockets Layer / Transport Layer Security).
-    // Imposta a 'true' se la porta è 465 (SSL), a 'false' se è 587 (STARTTLS).
-    secure: process.env.SMTP_PORT == 465 ? true : false,
+    // Per Mailtrap, spesso la porta 2525 o 587 richiede secure: false
+    // Se Mailtrap ti fornisce una porta 465, allora secure: true
+    secure: process.env.SMTP_PORT == 465 ? true : false, // Determina 'secure' in base alla porta
 
     // 'auth': Credenziali per autenticarsi sul server SMTP.
     auth: {
@@ -28,12 +28,14 @@ const transporter = nodemailer.createTransport({
     },
 
     // 'tls': opzioni aggiuntive per la sicurezza della connessione TLS
-    // tls: {
-    //     // 'rejectUnauthorized: false': Disabilita la verifica dei certificati autofirmati.
-    //     // **IMPORTANTE**: Usare 'false' solo in AMBIENTE DI SVILUPPO. 
-    //     // In produzione, dovresti avere certificati validi e impostare a 'true' (o ometterlo).
-    //     rejectUnauthorized: false
-    // }
+    tls: {
+        // 'rejectUnauthorized: false': Disabilita la verifica dei certificati autofirmati.
+        // **IMPORTANTE**: Usare 'false' solo in AMBIENTE DI SVILUPPO. 
+        // In produzione, dovresti avere certificati validi e impostare a 'true' (o ometterlo).
+        // Con Mailtrap, `rejectUnauthorized: false` è spesso ancora utile in sviluppo,
+        // anche se Mailtrap fornisce certificati validi.
+        rejectUnauthorized: false
+    }
 });
 
 //* definisco la funzione 'sendEmail' che prende i dettagli dell'email e la invia
@@ -50,11 +52,11 @@ const sendEmail = (to, subject, text, html, callback) => {
     const mailOptions = {
         from: `"NOME SITO" <${process.env.EMAIL_USER}>`,
         // indirizzi destinatari
-        to: {},
+        to: to,
         // 'subject': L'oggetto dell'email.
-        subject: 'OGGETTO EMAIL',
+        subject: subject,
         // 'text': Il contenuto dell'email in formato testo semplice.
-        text: 'TESTO EMAIL',
+        text: text,
         // 'html': Il contenuto dell'email in formato HTML.
         // Se fornito, prevale sul 'text' per i client email che supportano HTML.
         // L'operatore '|| text' garantisce che ci sia sempre un contenuto, usando il 'text' se l'HTML non è fornito.
@@ -74,7 +76,17 @@ const sendEmail = (to, subject, text, html, callback) => {
         }
 
         // se l'invio è riuscito, loggo le info e le passo alla callback
+        //! %s placeholder, segnaposto che indica dove va inserita una stringa
+        //! Node.js prende la stringa 'Messaggio inviato: %s', trova il %s, 
+        //! e lo sostituisce con il valore della variabile info.messageId convertito in stringa
         console.log('Messaggio inviato: %s', info.messageId);
-        //
-    })
-}
+        // 'nodemailer.getTestMessageUrl(info)' è utile per testare con servizi come Ethereal.email.
+        console.log('URL di anteprima: %s', nodemailer.getTestMessageUrl(info)); 
+        callback(null, info); // Passa 'null' per l'errore e 'info' per il successo
+    });
+};
+
+//* Esporto la funzione 'sendEmail
+module.exports = {
+    sendEmail
+};
