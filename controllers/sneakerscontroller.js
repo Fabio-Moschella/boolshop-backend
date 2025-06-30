@@ -6,8 +6,11 @@ const index = (req, res) => {
 
   connection.query(sqlSneaker, (err, results) => {
     if (err) return res.status(500).json({ error: "Database query failed" });
+
+    res.json({
+      results,
+    });
   });
-  res.json({});
 };
 
 //SHOW
@@ -15,7 +18,7 @@ const index = (req, res) => {
 const show = (req, res) => {
   const id = parseInt(req.params.id);
 
-  const sqlSneaker = "SELECT * FROM sneakers WHERE id = ?";
+  const sqlSneaker = "SELECT * FROM sneakers WHERE sneaker_id = ?";
   connection.query(sqlSneaker, [id], (err, results) => {
     // Qui ho i risultati
 

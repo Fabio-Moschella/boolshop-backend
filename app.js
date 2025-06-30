@@ -1,6 +1,6 @@
 require("dotenv").config();
-const port = process.env.APP_PORT;
-const url = process.env.APP_URL;
+const port = process.env.BACKEND_PORT;
+const url = process.env.LOCAL_URL;
 const express = require("express");
 const app = express();
 
