@@ -1,4 +1,4 @@
-require("dotenv");
+require("dotenv").config();
 const port = process.env.APP_PORT;
 const url = process.env.APP_URL;
 const express = require("express");
@@ -15,7 +15,7 @@ app.use(cors({ origin: `${url}:5173` }));
 app.use(express.static("public"));
 app.use(express.json());
 //ROUTERS
-app.use("/sneaker", sneakerRouter);
+app.use("/sneakers", sneakerRouter);
 
 //MIDDLEWARE
 app.use(errorHandler);
