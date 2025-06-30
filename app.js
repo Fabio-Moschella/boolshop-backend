@@ -1,8 +1,9 @@
 require("dotenv").config();
-const port = process.env.BACKEND_PORT;
-const url = process.env.LOCAL_URL;
 const express = require("express");
 const app = express();
+const port = process.env.BACKEND_PORT;
+const url = process.env.LOCAL_URL;
+const clientUrl = process.env.CLIENT_URL;
 
 const sneakerRouter = require("./routers/sneakers.js");
 const errorHandler = require("./middleware/errorhandler.js");
@@ -11,7 +12,7 @@ const cors = require("cors");
 const errorNotFound = require("./middleware/errorNotFound.js");
 
 //STATIC ASSEST
-app.use(cors({ origin: `${url}:5173` }));
+app.use(cors({ origin: clientUrl }));
 app.use(express.static("public"));
 app.use(express.json());
 //ROUTERS
