@@ -49,6 +49,7 @@ const transporter = nodemailer.createTransport({
  */
 const sendEmail = (to, subject, text, html, callback) => {
     // preparazione oggetto con le opzioni dell'email
+    // vengono passati al momento della chiamata da fuori (es. da app.js, da una route o da un controller).
     const mailOptions = {
         from: `"NOME SITO" <${process.env.EMAIL_USER}>`,
         // indirizzi destinatari
