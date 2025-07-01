@@ -97,7 +97,7 @@ module.exports = {
 
 //* --- BLOCCO DI TEST EMAIL: verrà eseguito all'avvio del server ---
 // queste variabili verranno sostituite con i dati del db
-    const testRecipient = process.env.EMAIL;
+    const testRecipient = process.env.PERSONAL_EMAIL;
     const testSubject = 'Test Email da Node.js - Funziona!';
     const testText = 'Ciao! Questa è una email di test inviata con successo dal tuo server Node.js.';
     const testHtml = '<h2>Ciao!</h2><p>Questa è una email di <b>test</b> inviata con successo dal tuo server Node.js.</p>';
