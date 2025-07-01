@@ -80,8 +80,11 @@ const sendEmail = (to, subject, text, html, callback) => {
         //! %s placeholder, segnaposto che indica dove va inserita una stringa
         //! Node.js prende la stringa 'Messaggio inviato: %s', trova il %s, 
         //! e lo sostituisce con il valore della variabile info.messageId convertito in stringa
+        //messageId non lo generi manualmente, ma viene creato automaticamente da Nodemailer dopo l'invio dell'email.
         console.log('Messaggio inviato: %s', info.messageId);
         // 'nodemailer.getTestMessageUrl(info)' è utile per testare con servizi come Ethereal.email.
+        // funzione di utilità specifica fornita da Nodemailer per facilitare il testing delle email in ambiente di sviluppo.
+        // Il suo scopo è generare un URL che, se aperto in un browser web, ti permetterà di visualizzare l'email che è stata "inviata", 
         console.log('URL di anteprima: %s', nodemailer.getTestMessageUrl(info)); 
         callback(null, info); // Passa 'null' per l'errore e 'info' per il successo
     });
@@ -91,3 +94,23 @@ const sendEmail = (to, subject, text, html, callback) => {
 module.exports = {
     sendEmail
 };
+
+//* --- BLOCCO DI TEST EMAIL: verrà eseguito all'avvio del server ---
+// queste variabili verranno sostituite con i dati del db
+    const testRecipient = 'mike.milzoni@gmail.com';
+    const testSubject = 'Test Email da Node.js - Funziona!';
+    const testText = 'Ciao! Questa è una email di test inviata con successo dal tuo server Node.js.';
+    const testHtml = '<h2>Ciao!</h2><p>Questa è una email di <b>test</b> inviata con successo dal tuo server Node.js.</p>';
+
+    sendEmail(testRecipient, testSubject, testText, testHtml, (error, info) => {
+        if (error) {
+            console.error('ERRORE durante l\'invio dell\'email di test:', error);
+            // Potrebbe essere utile qui: console.error('Dettagli errore:', error.response); // Se disponibile
+        } else {
+            console.log('Email di test inviata con successo!');
+            console.log('MessageId:', info.messageId);
+            // Se usi un account di test Ethereal, potresti vedere un URL qui:
+            // console.log('URL di anteprima (solo per test Ethereal):', nodemailer.getTestMessageUrl(info));
+        }
+    });
+    //* --- FINE BLOCCO DI TEST EMAIL ---
