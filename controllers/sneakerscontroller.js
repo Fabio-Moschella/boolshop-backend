@@ -140,7 +140,20 @@ const postCheckOut =(req,res) =>{
 
   if(!email){errors.push({message:"controlla i dati immessi nel campo e-mail"})}
 
-  if (errors.length){return res.status(400).json(errors)}
+  const testSubject = 'Test Email da Node.js - Funziona!';
+  const testText = 'Ciao! Questa è una email di test inviata con successo dal tuo server Node.js.';
+  const testHtml = `<h2>Ciao ${name} ${surname}!</h2><p>Questa è una email di <b>test</b> inviata con successo dal tuo server Node.js.</p>`;
+
+  if (errors.length){return res.status(400).json(errors)}else {
+    sendEmail([email,process.env.EMAIL_USER], testSubject, testText, testHtml, (error, info) => {
+      if (error) {
+          console.error('ERRORE durante l\'invio dell\'email di test:', error);
+      } else {
+          console.log('Email di test inviata con successo!');
+          console.log('MessageId:', info.messageId);
+      };
+    });
+  };
 
 
 const queryPopUp = `INSERT INTO data_checkout (name,surname,address,phone,email) VALUES(?, ?, ?, ?, ?)`
