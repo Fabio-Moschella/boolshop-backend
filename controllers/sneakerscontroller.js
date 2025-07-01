@@ -93,9 +93,10 @@ const postPopUp =(req,res) =>{
 
   if(!email){errors.push({message:"controlla i dati immessi nel campo e-mail"})};
 
-  const testSubject = 'Test Email da Node.js - Funziona!';
+  const testSubject = `Benvenuto in Boolshop ${name}!`;
   const testText = 'Ciao! Questa è una email di test inviata con successo dal tuo server Node.js.';
-  const testHtml = `<h2>Ciao ${name} ${surname}!</h2><p>Questa è una email di <b>test</b> inviata con successo dal tuo server Node.js.</p>`;
+  const testHtml = `<h2>Ciao ${name} ${surname}!</h2>
+  <p>Questa è una email di benvenuto al nostro e-commerce</p>`;
 
 const queryPopUp = `INSERT INTO data_popup (name,surname,email) VALUES(?, ?, ?)`
 
