@@ -52,9 +52,13 @@ LIMIT 5`;
 const show = (req, res) => {
   const model = decodeURIComponent(req.params.model);
   const brand = decodeURIComponent(req.params.brand);
+  const sqlCurrentSneaker = "SELECT * FROM sneakers WHERE brand = ?  AND model = ? ";
 
-  const sqlSneaker = "SELECT * FROM sneakers WHERE brand = ?  AND model = ? ";
-  connection.query(sqlSneaker, [brand,model], (err, results) => {
+  const sqRelatedSneaker = "SELECT * FROM sneakers WHERE brand = ?  AND model != ? ";
+
+  connection.query(sqlCurrentSneaker, [brand,model], (err, currentSneakerResults) => {
+
+
 
 
     if (err) return res.status(500).json({ error: "Database query failed" });
