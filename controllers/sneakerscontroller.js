@@ -1,4 +1,5 @@
 const connection = require("../data/db.js");
+const sneaker = require("../routers/sneakersRouter.js");
 
 // INDEX TUTTE LE SCARPE
 
@@ -52,22 +53,29 @@ LIMIT 5`;
 const show = (req, res) => {
   const model = decodeURIComponent(req.params.model);
   const brand = decodeURIComponent(req.params.brand);
-  const sqlCurrentSneaker = "SELECT * FROM sneakers WHERE brand = ?  AND model = ? ";
 
+  const sqlCurrentSneaker = "SELECT * FROM sneakers WHERE brand = ?  AND model = ? ";
   const sqRelatedSneaker = "SELECT * FROM sneakers WHERE brand = ?  AND model != ? ";
 
-  connection.query(sqlCurrentSneaker, [brand,model], (err, currentSneakerResults) => {
-
-
-
-
+  connection.query(sqlCurrentSneaker, [brand, model], (err, currentSneakerResults) => {
     if (err) return res.status(500).json({ error: "Database query failed" });
-    if (results.length === 0)
+    if (currentSneakerResults.length === 0)
       return res.status(404).json({ error: "sneaker not found" });
-    res.json({
-      results,
-    });
+
+    connection.query(sqRelatedSneaker, [brand, model], (err, relatedSneakerResults) => {
+      if (err) return res.status(500).json({ error: "Database query failed" });
+      if (relatedSneakerResults.length === 0)
+        return res.status(404).json({ error: "sneaker not found" });
+
+      const sneaker = {
+      ...currentSneakerResults[0],
+      relatedSneakerResults,
+    }
+    res.json({sneaker});
   });
+    });
+
+    
 };
 
 // post per dati del pop-up di benvenuto
