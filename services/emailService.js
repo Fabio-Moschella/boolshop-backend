@@ -8,6 +8,7 @@ const transporter = nodemailer.createTransport({
     },
     tls: { rejectUnauthorized: false }
 });
+
 const sendEmail = (to, subject, text, html, callback) => {
     const mailOptions = {
         from: process.env.EMAIL_USER,
