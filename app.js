@@ -6,9 +6,6 @@ const port = process.env.BACKEND_PORT;
 const clientUrl = process.env.CLIENT_URL;
 
 const sneakerRouter = require("./routers/sneakersRouter.js");
-//* --- Importo il tuo servizio email x test (poi va spostato su controllers o routers) ---
-const { sendEmail } = require('./services/emailService.js');
-
 
 const errorHandler = require("./middleware/errorhandler.js");
 const cors = require("cors");

@@ -1,5 +1,6 @@
 const connection = require("../data/db.js");
-const sneaker = require("../routers/sneakersRouter.js");
+const { sendEmail } = require('../services/emailService.js');
+
 
 // INDEX TUTTE LE SCARPE
 
@@ -82,18 +83,20 @@ const show = (req, res) => {
 
 const postPopUp =(req,res) =>{
 
-
-  const {name ,surname, email} = req.body
+  const {name ,surname, email} = req.body;
 
   let errors =[]
 
-  if(!name){errors.push({message:"controlla i dati immessi nel campo nome"})}
+  if(!name){errors.push({message:"controlla i dati immessi nel campo nome"})};
 
-  if(!surname){errors.push({message:"controlla i dati immessi nel campo cognome"})}
+  if(!surname){errors.push({message:"controlla i dati immessi nel campo cognome"})};
 
-  if(!email){errors.push({message:"controlla i dati immessi nel campo e-mail"})}
-if (errors.length){return res.status(400).json(errors)}
+  if(!email){errors.push({message:"controlla i dati immessi nel campo e-mail"})};
 
+  // const testRecipient = process.env.PERSONAL_EMAIL;
+  const testSubject = 'Test Email da Node.js - Funziona!';
+  const testText = 'Ciao! Questa è una email di test inviata con successo dal tuo server Node.js.';
+  const testHtml = `<h2>Ciao ${name} ${surname}!</h2><p>Questa è una email di <b>test</b> inviata con successo dal tuo server Node.js.</p>`;
 
 const queryPopUp = `INSERT INTO data_popup (name,surname,email) VALUES(?, ?, ?)`
 
@@ -102,7 +105,19 @@ connection.query(queryPopUp,[name,surname,email],(err,results) =>{
    res.status(201).json({message:"Dati ricevuti correttamente"})
    console.log(results);
    
-   
+   if (errors.length) {
+    return res.status(400).json(errors)
+  }
+  else {
+    sendEmail(email, testSubject, testText, testHtml, (error, info) => {
+      if (error) {
+          console.error('ERRORE durante l\'invio dell\'email di test:', error);
+      } else {
+          console.log('Email di test inviata con successo!');
+          console.log('MessageId:', info.messageId);
+      };
+    });
+  };
 })
 }
 
