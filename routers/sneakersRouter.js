@@ -9,6 +9,8 @@ sneaker.get("/Latest", sneakersController.indexLatest);
 sneaker.get("/Cheapest", sneakersController.indexCheapest);
 
 // ROUTE MOSTRA DETTAGLIO SCARPA (SHOW)
-sneaker.get("/:id", sneakersController.show);
+sneaker.get("/:brand/:model", sneakersController.show);
+// ROUTE PER POP-UP DI BENVENUTO
+sneaker.post("/",sneakersController.postPopUp)
 
 module.exports = sneaker;
