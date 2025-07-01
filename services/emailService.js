@@ -1,55 +1,38 @@
-//! modulo riutilizzabile che contiene la logica per l'invio delle email
 
-//* Importo la libreria Nodemailer 
 const nodemailer = require('nodemailer');
 
-//* configuro il TRANSPORTER di Nodemailer importando le variabili dal file .env
-// TRANSPORTER = oggetto responsabile di COME e DA DOVE le email verranno inviate
 const transporter = nodemailer.createTransport({
 
-    // host: indirizzo del server SMTP del provider email
     // "punto di partenza" da cui verranno spedite le email
     host: process.env.SMTP_HOST,
 
-    // 'port': La porta che il server SMTP usa per la comunicazione.
-    // Tipicamente 587 (con STARTTLS) o 465 (con SSL/TLS).
     port: process.env.SMTP_PORT,
 
     // Per Mailtrap, spesso la porta 2525 o 587 richiede secure: false
     // Se Mailtrap ti fornisce una porta 465, allora secure: true
-    secure: process.env.SMTP_PORT == 465 ? true : false, // Determina 'secure' in base alla porta
+    secure: process.env.SMTP_PORT == 465 ? true : false,
 
     // 'auth': Credenziali per autenticarsi sul server SMTP.
     auth: {
         // user: email completa
         user: process.env.EMAIL_USER,
         // pass: password email
-        pass: process.env.EMAIL_PASS,
-    },
+        pass: process.env.EMAIL_PASS,},
 
     // 'tls': opzioni aggiuntive per la sicurezza della connessione TLS
-    tls: {
-        // 'rejectUnauthorized: false': Disabilita la verifica dei certificati autofirmati.
-        // **IMPORTANTE**: Usare 'false' solo in AMBIENTE DI SVILUPPO. 
-        // In produzione, dovresti avere certificati validi e impostare a 'true' (o ometterlo).
-        // Con Mailtrap, `rejectUnauthorized: false` è spesso ancora utile in sviluppo,
-        // anche se Mailtrap fornisce certificati validi.
-        rejectUnauthorized: false
-    }
-});
+    tls: { rejectUnauthorized: false}});
 
 //* definisco la funzione 'sendEmail' che prende i dettagli dell'email e la invia
 /**
- * @param {string} to - L'indirizzo email del destinatario.
- * @param {string} subject - L'oggetto dell'email.
- * @param {string} text - Il contenuto testuale semplice dell'email.
- * @param {string} html - Il contenuto HTML dell'email (opzionale).
+ * @param {string} to 
+ * @param {string} subject
+ * @param {string} text 
+ * @param {string} html 
  * @param {function} callback - Una funzione di callback che viene richiamata al termine dell'invio.
  * Prende due argomenti: 'error' (se c'è un errore) e 'info' (informazioni sull'invio riuscito).
  */
 const sendEmail = (to, subject, text, html, callback) => {
-    // preparazione oggetto con le opzioni dell'email
-    // vengono passati al momento della chiamata da fuori (es. da app.js, da una route o da un controller).
+    
     const mailOptions = {
         from: `"NOME SITO" <${process.env.EMAIL_USER}>`,
         // indirizzi destinatari

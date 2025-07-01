@@ -1,5 +1,6 @@
 const connection = require("../data/db.js");
-// INDEX
+
+// INDEX TUTTE LE SCARPE
 
 const indexAll = (req, res) => {
   const sqlSneaker = "SELECT * FROM sneakers";
@@ -12,6 +13,9 @@ const indexAll = (req, res) => {
     });
   });
 };
+
+
+// INDEX ULTIMI 5 ARRIVI
 
 const indexLatest = (req, res) => {
   const sqlLatestSneaker = `SELECT *
@@ -27,6 +31,8 @@ LIMIT 5`;
   });
 };
 
+// INDEX 5 SCARPE ECONOMICHE PIU ECONOMICHE
+
 const indexCheapest = (req, res) => {
   const sqlCheapestSneaker = `SELECT *
 FROM sneakers
@@ -41,7 +47,7 @@ LIMIT 5`;
   });
 };
 
-//SHOW
+// DETTAGLIO SCARPA
 
 const show = (req, res) => {
   const model = decodeURIComponent(req.params.model);
@@ -59,6 +65,8 @@ const show = (req, res) => {
     });
   });
 };
+
+// post per dati del pop-up di benvenuto
 
 const postPopUp =(req,res) =>{
 
@@ -86,5 +94,39 @@ connection.query(queryPopUp,[name,surname,email],(err,results) =>{
 })
 }
 
-module.exports = { indexAll, indexLatest, indexCheapest, show , postPopUp };
+
+// rotta per dati checkout
+
+const postCheckOut =(req,res) =>{
+
+
+  const {name ,surname,address,phone, email} = req.body
+
+  let errors =[]
+
+  if(!name){errors.push({message:"controlla i dati immessi nel campo nome"})}
+
+  if(!surname){errors.push({message:"controlla i dati immessi nel campo cognome"})}
+
+  if(!address){errors.push({message:"controlla i dati immessi nel campo dell'indirizzo"})}
+
+  if(!phone){errors.push({message:"controlla i dati immessi nel campo phone"})}
+
+  if(!email){errors.push({message:"controlla i dati immessi nel campo e-mail"})}
+
+  if (errors.length){return res.status(400).json(errors)}
+
+
+const queryPopUp = `INSERT INTO data_checkout (name,surname,address,phone,email) VALUES(?, ?, ?, ?, ?)`
+
+connection.query(queryPopUp,[name,surname,address,phone,email],(err,results) =>{
+   if (err) return res.status(500).json({ message: "Errore del server", err });
+   res.status(201).json({message:"Dati ricevuti correttamente"})
+   console.log(results);
+   
+   
+})
+}
+
+module.exports = { indexAll, indexLatest, indexCheapest, show , postPopUp, postCheckOut};
 
