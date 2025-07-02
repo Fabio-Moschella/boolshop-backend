@@ -92,6 +92,9 @@ const postPopUp =(req,res) =>{
   if(!surname){errors.push({message:"controlla i dati immessi nel campo cognome"})};
 
   if(!email){errors.push({message:"controlla i dati immessi nel campo e-mail"})};
+  if (errors.length) {
+    return res.status(400).json(errors)
+  }
 
   const testSubject = `Benvenuto in Boolshop ${name}!`;
   const testText = 'Ciao! Questa è una email di test inviata con successo dal tuo server Node.js.';
@@ -105,10 +108,8 @@ connection.query(queryPopUp,[name,surname,email],(err,results) =>{
    res.status(201).json({message:"Dati ricevuti correttamente"})
    console.log(results);
    
-   if (errors.length) {
-    return res.status(400).json(errors)
-  }
-  else {
+   
+  
     sendEmail(email, testSubject, testText, testHtml, (error, info) => {
       if (error) {
           console.error('ERRORE durante l\'invio dell\'email di test:', error);
@@ -117,7 +118,7 @@ connection.query(queryPopUp,[name,surname,email],(err,results) =>{
           console.log('MessageId:', info.messageId);
       };
     });
-  };
+  
 })
 }
 
@@ -141,11 +142,12 @@ const postCheckOut =(req,res) =>{
 
   if(!email){errors.push({message:"controlla i dati immessi nel campo e-mail"})}
 
+if (errors.length){return res.status(400).json(errors)}
   const testSubject = 'Test Email da Node.js - Funziona!';
   const testText = 'Ciao! Questa è una email di test inviata con successo dal tuo server Node.js.';
   const testHtml = `<h2>Ciao ${name} ${surname}!</h2><p>Questa è una email di <b>test</b> inviata con successo dal tuo server Node.js.</p>`;
 
-  if (errors.length){return res.status(400).json(errors)}else {
+  
     sendEmail([email,process.env.EMAIL_USER], testSubject, testText, testHtml, (error, info) => {
       if (error) {
           console.error('ERRORE durante l\'invio dell\'email di test:', error);
@@ -154,7 +156,7 @@ const postCheckOut =(req,res) =>{
           console.log('MessageId:', info.messageId);
       };
     });
-  };
+  
 
 
 const queryPopUp = `INSERT INTO data_checkout (name,surname,address,phone,email) VALUES(?, ?, ?, ?, ?)`
@@ -169,4 +171,3 @@ connection.query(queryPopUp,[name,surname,address,phone,email],(err,results) =>{
 }
 
 module.exports = { indexAll, indexLatest, indexCheapest, show , postPopUp, postCheckOut};
-
