@@ -20,7 +20,7 @@ const indexAll = (req, res) => {
 const indexLatest = (req, res) => {
   const sqlLatestSneaker = `SELECT *
 FROM sneakers
-ORDER BY date_of_arrival DESC 
+ORDER BY date_of_arrival DESC
 LIMIT 5`;
   connection.query(sqlLatestSneaker, (err, results) => {
     if (err) return res.status(500).json({ error: "Database query failed" });
@@ -54,9 +54,9 @@ const show = (req, res) => {
   const brand = decodeURIComponent(req.params.brand);
 
   const sqlCurrentSneaker =
-    "SELECT * FROM sneakers WHERE brand = ?  AND model = ? ";
+    "SELECT * FROM sneakers WHERE brand = ? AND model = ? ";
   const sqRelatedSneaker =
-    "SELECT * FROM sneakers WHERE brand = ?  AND model != ? ";
+    "SELECT * FROM sneakers WHERE brand = ? AND model != ? ";
 
   connection.query(
     sqlCurrentSneaker,
@@ -72,9 +72,7 @@ const show = (req, res) => {
         (err, relatedSneakerResults) => {
           if (err)
             return res.status(500).json({ error: "Database query failed" });
-          if (relatedSneakerResults.length === 0)
-            return res.status(404).json({ error: "sneaker not found" });
-
+         
           const sneaker = {
             ...currentSneakerResults[0],
             relatedSneakerResults,
@@ -86,7 +84,6 @@ const show = (req, res) => {
   );
 };
 
-// post per dati del pop-up di benvenuto
 
 const postPopUp = (req, res) => {
   const { name, surname, email } = req.body;
@@ -135,7 +132,7 @@ const postPopUp = (req, res) => {
 // rotta per dati checkout
 
 const postCheckOut = (req, res) => {
-  const { name, surname, address, phone, email } = req.body;
+  const { name, surname, address, phone, email, cartItems } = req.body;
 
   let errors = [];
 
@@ -159,6 +156,9 @@ const postCheckOut = (req, res) => {
 
   if (!email) {
     errors.push({ message: "controlla i dati immessi nel campo e-mail" });
+  }
+  if (!cartItems) {
+    errors.push({ message: "il carrello è vuoto" });
   }
 
   if (errors.length) {
@@ -185,7 +185,7 @@ const postCheckOut = (req, res) => {
   );
 
   const queryDataCheckout = `INSERT INTO data_checkout (name,surname,address,phone,email) VALUES(?, ?, ?, ?, ?)`;
-  const queryOrder = `SELECT 
+  const queryOrder = `SELECT
     sneakers.price,
     sneakers.brand,
     sneakers.model,
@@ -219,6 +219,7 @@ FROM
           return res.status(500).json({ message: "Errore del server", err });
         res.status(201).json({ message: "Dati ricevuti correttamente" });
         console.log(results);
+       
         sendEmail(
           [email, process.env.EMAIL_USER],
           userTestSubject,
