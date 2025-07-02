@@ -20,10 +20,10 @@ sneaker.get("/:brand/:model", sneakersController.show);
 
 // ROUTE PER POP-UP DI BENVENUTO
 
-sneaker.post("/popup",sneakersController.postPopUp)
+sneaker.post("/popup", sneakersController.postPopUp);
 
 // ROUTE PER DATI FATTURAZIONE CHECKOUT
 
-sneaker.post("/checkoutdata",sneakersController.postCheckOut)
+sneaker.post("/checkoutdata", sneakersController.postCheckOut);
 
 module.exports = sneaker;
