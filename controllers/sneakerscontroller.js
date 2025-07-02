@@ -20,7 +20,7 @@ const indexAll = (req, res) => {
 const indexLatest = (req, res) => {
   const sqlLatestSneaker = `SELECT *
 FROM sneakers
-ORDER BY date_of_arrival DESC
+ORDER BY date_of_arrival DESC 
 LIMIT 5`;
   connection.query(sqlLatestSneaker, (err, results) => {
     if (err) return res.status(500).json({ error: "Database query failed" });
@@ -54,14 +54,12 @@ const show = (req, res) => {
   const brand = decodeURIComponent(req.params.brand);
 
   const sqlCurrentSneaker =
-    "SELECT * FROM sneakers WHERE brand = ? AND model = ? ";
+    "SELECT * FROM sneakers WHERE brand = ?  AND model = ? ";
   const sqRelatedSneaker =
-    "SELECT * FROM sneakers WHERE brand = ? AND model != ? ";
+    "SELECT * FROM sneakers WHERE brand = ?  AND model != ? ";
 
   connection.query(
-    sqlCurrentSneaker,
-    [brand, model],
-    (err, currentSneakerResults) => {
+    sqlCurrentSneaker,[brand, model],(err, currentSneakerResults) => {
       if (err) return res.status(500).json({ error: "Database query failed" });
       if (currentSneakerResults.length === 0)
         return res.status(404).json({ error: "sneaker not found" });
@@ -72,7 +70,9 @@ const show = (req, res) => {
         (err, relatedSneakerResults) => {
           if (err)
             return res.status(500).json({ error: "Database query failed" });
-         
+          if (relatedSneakerResults.length === 0)
+            return res.status(404).json({ error: "sneaker not found" });
+
           const sneaker = {
             ...currentSneakerResults[0],
             relatedSneakerResults,
@@ -84,6 +84,7 @@ const show = (req, res) => {
   );
 };
 
+// post per dati del pop-up di benvenuto
 
 const postPopUp = (req, res) => {
   const { name, surname, email } = req.body;
@@ -132,35 +133,25 @@ const postPopUp = (req, res) => {
 // rotta per dati checkout
 
 const postCheckOut = (req, res) => {
-  const { name, surname, address, phone, email, cartItems } = req.body;
-
+  const { name, surname, address, phone, email } = req.body;
   let errors = [];
-
   if (!name) {
     errors.push({ message: "controlla i dati immessi nel campo nome" });
   }
-
   if (!surname) {
     errors.push({ message: "controlla i dati immessi nel campo cognome" });
   }
-
   if (!address) {
     errors.push({
       message: "controlla i dati immessi nel campo dell'indirizzo",
     });
   }
-
   if (!phone) {
     errors.push({ message: "controlla i dati immessi nel campo phone" });
   }
-
   if (!email) {
     errors.push({ message: "controlla i dati immessi nel campo e-mail" });
   }
-  if (!cartItems) {
-    errors.push({ message: "il carrello è vuoto" });
-  }
-
   if (errors.length) {
     return res.status(400).json(errors);
   }
@@ -168,7 +159,6 @@ const postCheckOut = (req, res) => {
   const userTestText =
     "Ciao! Questa è una email di test inviata con successo dal tuo server Node.js.";
   const userTestHtml = `<h2>Ciao ${name} ${surname}!</h2><p>Questa è una email di <b>test</b> inviata con successo dal tuo server Node.js.</p>`;
-
   sendEmail(
     [email, process.env.EMAIL_USER],
     userTestSubject,
@@ -183,7 +173,6 @@ const postCheckOut = (req, res) => {
       }
     }
   );
-
   const queryDataCheckout = `INSERT INTO data_checkout (name,surname,address,phone,email) VALUES(?, ?, ?, ?, ?)`;
   const queryOrder = `SELECT
     sneakers.price,
@@ -204,7 +193,6 @@ FROM
     orders ON order_size.id_order = orders.id_order
         INNER JOIN
     data_checkout ON orders.id_data_checkout = data_checkout.id_data_checkout`;
-
   connection.query(
     queryDataCheckout,
     [name, surname, address, phone, email],
@@ -213,13 +201,11 @@ FROM
         return res.status(500).json({ message: "Errore del server", err });
       res.status(201).json({ message: "Dati ricevuti correttamente" });
       console.log(results);
-
       connection.query(queryOrder, (err, results) => {
         if (err)
           return res.status(500).json({ message: "Errore del server", err });
         res.status(201).json({ message: "Dati ricevuti correttamente" });
         console.log(results);
-       
         sendEmail(
           [email, process.env.EMAIL_USER],
           userTestSubject,
