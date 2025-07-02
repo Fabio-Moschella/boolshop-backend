@@ -233,29 +233,33 @@ const postCheckOut = (req, res) => {
                 return res
                   .status(500)
                   .json({ message: "Errore salvataggio articoli", err });
-
               const subject = "Conferma ordine - bool_shop";
               const text = `Grazie per il tuo ordine, ${name} ${surname}!`;
               const html = `
+            <h2>Ciao ${name} ${surname},</h2>
+            <p>ordine ricevuto!</p>
+            <p>Totale ordine: <strong>€${total_price.toFixed(2)}</strong></p>
+            <p>Riceverai una email con i dettagli della spedizione.</p>
+          `;
+
+              sendEmail(process.env.EMAIL_USER, subject, text, html);
+
+              const userSubject = "Conferma ordine - bool_shop";
+              const userText = `Grazie per il tuo ordine, ${name} ${surname}!`;
+              const userHtml = `
             <h2>Ciao ${name} ${surname},</h2>
             <p>Grazie per il tuo ordine!</p>
             <p>Totale ordine: <strong>€${total_price.toFixed(2)}</strong></p>
             <p>Riceverai una email con i dettagli della spedizione.</p>
           `;
 
-              sendEmail(
-                [email, process.env.EMAIL_USER],
-                subject,
-                text,
-                html,
-                () => {
-                  return res.status(201).json({
-                    message: "Ordine completato con successo",
-                    id_order,
-                    total_price,
-                  });
-                }
-              );
+              sendEmail(email, userSubject, userText, userHtml, () => {
+                return res.status(201).json({
+                  message: "Ordine completato con successo",
+                  id_order,
+                  total_price,
+                });
+              });
             });
           }
         );
@@ -263,8 +267,6 @@ const postCheckOut = (req, res) => {
     }
   );
 };
-
-// rotta per dati checkout
 
 module.exports = {
   indexAll,
