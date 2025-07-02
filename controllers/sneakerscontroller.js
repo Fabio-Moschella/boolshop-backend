@@ -143,12 +143,12 @@ const postCheckOut =(req,res) =>{
   if(!email){errors.push({message:"controlla i dati immessi nel campo e-mail"})}
 
 if (errors.length){return res.status(400).json(errors)}
-  const testSubject = 'Test Email da Node.js - Funziona!';
-  const testText = 'Ciao! Questa è una email di test inviata con successo dal tuo server Node.js.';
-  const testHtml = `<h2>Ciao ${name} ${surname}!</h2><p>Questa è una email di <b>test</b> inviata con successo dal tuo server Node.js.</p>`;
+  const userTestSubject = 'Test Email da Node.js - Funziona!';
+  const userTestText = 'Ciao! Questa è una email di test inviata con successo dal tuo server Node.js.';
+  const userTestHtml = `<h2>Ciao ${name} ${surname}!</h2><p>Questa è una email di <b>test</b> inviata con successo dal tuo server Node.js.</p>`;
 
   
-    sendEmail([email,process.env.EMAIL_USER], testSubject, testText, testHtml, (error, info) => {
+    sendEmail([email,process.env.EMAIL_USER], userTestSubject, userTestText, userTestHtml, (error, info) => {
       if (error) {
           console.error('ERRORE durante l\'invio dell\'email di test:', error);
       } else {
