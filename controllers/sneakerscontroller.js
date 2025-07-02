@@ -59,7 +59,9 @@ const show = (req, res) => {
     "SELECT * FROM sneakers WHERE brand = ?  AND model != ? ";
 
   connection.query(
-    sqlCurrentSneaker,[brand, model],(err, currentSneakerResults) => {
+    sqlCurrentSneaker,
+    [brand, model],
+    (err, currentSneakerResults) => {
       if (err) return res.status(500).json({ error: "Database query failed" });
       if (currentSneakerResults.length === 0)
         return res.status(404).json({ error: "sneaker not found" });
@@ -130,103 +132,139 @@ const postPopUp = (req, res) => {
   });
 };
 
-// rotta per dati checkout
-
 const postCheckOut = (req, res) => {
-  const { name, surname, address, phone, email } = req.body;
+  const { name, surname, address, phone, email, items } = req.body;
+
   let errors = [];
-  if (!name) {
+
+  if (!name)
     errors.push({ message: "controlla i dati immessi nel campo nome" });
-  }
-  if (!surname) {
+  if (!surname)
     errors.push({ message: "controlla i dati immessi nel campo cognome" });
-  }
-  if (!address) {
+  if (!address)
     errors.push({
       message: "controlla i dati immessi nel campo dell'indirizzo",
     });
-  }
-  if (!phone) {
+  if (!phone)
     errors.push({ message: "controlla i dati immessi nel campo phone" });
-  }
-  if (!email) {
+  if (!email)
     errors.push({ message: "controlla i dati immessi nel campo e-mail" });
+  if (!Array.isArray(items) || items.length === 0) {
+    errors.push({ message: "Il carrello è vuoto." });
   }
-  if (errors.length) {
-    return res.status(400).json(errors);
-  }
-  const userTestSubject = "Test Email da Node.js - Funziona!";
-  const userTestText =
-    "Ciao! Questa è una email di test inviata con successo dal tuo server Node.js.";
-  const userTestHtml = `<h2>Ciao ${name} ${surname}!</h2><p>Questa è una email di <b>test</b> inviata con successo dal tuo server Node.js.</p>`;
-  sendEmail(
-    [email, process.env.EMAIL_USER],
-    userTestSubject,
-    userTestText,
-    userTestHtml,
-    (error, info) => {
-      if (error) {
-        console.error("ERRORE durante l'invio dell'email di test:", error);
-      } else {
-        console.log("Email di test inviata con successo!");
-        console.log("MessageId:", info.messageId);
-      }
-    }
-  );
-  const queryDataCheckout = `INSERT INTO data_checkout (name,surname,address,phone,email) VALUES(?, ?, ?, ?, ?)`;
-  const queryOrder = `SELECT
-    sneakers.price,
-    sneakers.brand,
-    sneakers.model,
-    sneakers.color,
-    sneakers.gender,
-    sizes.size,
-    order_size.quantity,
-    orders.total_price
-FROM
-    sneakers
-        INNER JOIN
-    sizes ON sneakers.id_sneaker = sizes.id_sneaker
-        INNER JOIN
-    order_size ON sizes.id_size = order_size.id_size
-        INNER JOIN
-    orders ON order_size.id_order = orders.id_order
-        INNER JOIN
-    data_checkout ON orders.id_data_checkout = data_checkout.id_data_checkout`;
+
+  if (errors.length) return res.status(400).json(errors);
+
+  const queryDataCheckout = `
+    INSERT INTO data_checkout (name, surname, address, phone, email)
+    VALUES (?, ?, ?, ?, ?)
+  `;
+
   connection.query(
     queryDataCheckout,
     [name, surname, address, phone, email],
-    (err, results) => {
+    (err, result) => {
       if (err)
-        return res.status(500).json({ message: "Errore del server", err });
-      res.status(201).json({ message: "Dati ricevuti correttamente" });
-      console.log(results);
-      connection.query(queryOrder, (err, results) => {
+        return res
+          .status(500)
+          .json({ message: "Errore salvataggio utente", err });
+
+      const id_data_checkout = result.insertId;
+      const sizeIds = items.map((item) => item.id_size);
+      const placeholders = sizeIds.map(() => "?").join(",");
+
+      const queryPrices = `
+      SELECT sizes.id_size, sneakers.id_sneaker, sneakers.price
+      FROM sizes
+      JOIN sneakers ON sizes.id_sneaker = sneakers.id_sneaker
+      WHERE sizes.id_size IN (${placeholders})
+    `;
+
+      connection.query(queryPrices, sizeIds, (err, priceResults) => {
         if (err)
-          return res.status(500).json({ message: "Errore del server", err });
-        res.status(201).json({ message: "Dati ricevuti correttamente" });
-        console.log(results);
-        sendEmail(
-          [email, process.env.EMAIL_USER],
-          userTestSubject,
-          userTestText,
-          userTestHtml,
-          (error, info) => {
-            if (error) {
-              console.error(
-                "ERRORE durante l'invio dell'email di test:",
-                error
+          return res
+            .status(500)
+            .json({ message: "Errore recupero prezzi", err });
+
+        const sneakerMap = {};
+        const sizeToSneaker = {};
+
+        priceResults.forEach((row) => {
+          sizeToSneaker[row.id_size] = row.id_sneaker;
+          sneakerMap[row.id_sneaker] = row.price;
+        });
+
+        let total_price = 0;
+
+        items.forEach((item) => {
+          const id_sneaker = sizeToSneaker[item.id_size];
+          const itemPrice = sneakerMap[id_sneaker];
+          total_price += itemPrice * item.quantity;
+        });
+
+        const queryOrder = `
+        INSERT INTO orders (id_data_checkout, total_price)
+        VALUES (?, ?)
+      `;
+
+        connection.query(
+          queryOrder,
+          [id_data_checkout, total_price],
+          (err, result) => {
+            if (err)
+              return res
+                .status(500)
+                .json({ message: "Errore salvataggio ordine", err });
+
+            const id_order = result.insertId;
+            const orderItems = items.map((item) => [
+              item.id_size,
+              id_order,
+              item.quantity,
+            ]);
+
+            const queryOrderSize = `
+          INSERT INTO order_size (id_size, id_order, quantity)
+          VALUES ?
+        `;
+
+            connection.query(queryOrderSize, [orderItems], (err) => {
+              if (err)
+                return res
+                  .status(500)
+                  .json({ message: "Errore salvataggio articoli", err });
+
+              const subject = "Conferma ordine - bool_shop";
+              const text = `Grazie per il tuo ordine, ${name} ${surname}!`;
+              const html = `
+            <h2>Ciao ${name} ${surname},</h2>
+            <p>Grazie per il tuo ordine!</p>
+            <p>Totale ordine: <strong>€${total_price.toFixed(2)}</strong></p>
+            <p>Riceverai una email con i dettagli della spedizione.</p>
+          `;
+
+              sendEmail(
+                [email, process.env.EMAIL_USER],
+                subject,
+                text,
+                html,
+                () => {
+                  return res.status(201).json({
+                    message: "Ordine completato con successo",
+                    id_order,
+                    total_price,
+                  });
+                }
               );
-            } else {
-              console.log("Email di test inviata con successo!");
-              console.log("MessageId:", info.messageId);
-            }
+            });
           }
         );
       });
     }
   );
 };
+
+// rotta per dati checkout
 
 module.exports = {
   indexAll,
