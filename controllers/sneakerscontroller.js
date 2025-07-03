@@ -192,7 +192,7 @@ const postCheckOut = (req, res) => {
           sneakerMap[row.id_sneaker] = row.price;
         });
 
-        let total_price = 0;
+        let total_price = parseInt(0);
 
         items.forEach((item) => {
           const id_sneaker = sizeToSneaker[item.id_size];
