@@ -86,16 +86,38 @@ LIMIT 1`;
 // INDEX 5 SCARPE ECONOMICHE PIU ECONOMICHE
 
 const indexCheapest = (req, res) => {
-  const sqlCheapestSneaker = `SELECT *
-FROM sneakers
-ORDER BY price ASC
-LIMIT 5`;
+  const sqlCheapestSneaker = `
+    SELECT 
+      s.*, 
+      GROUP_CONCAT(i.url ORDER BY i.id_image ASC) AS image_urls
+    FROM 
+      sneakers s
+    JOIN 
+      images i ON s.id_sneaker = i.id_sneaker
+    GROUP BY
+      s.id_sneaker
+    ORDER BY 
+      s.price ASC 
+    LIMIT 5;
+  `; //
+
   connection.query(sqlCheapestSneaker, (err, results) => {
-    if (err) return res.status(500).json({ error: "Database query failed" });
+    if (err) {
+      console.error("Errore nella query al database:", err); // Logga l'errore per il debugging
+      return res.status(500).json({ error: "Errore nella query al database" }); //
+    }
+
+    // Elabora i risultati per trasformare la stringa di image_urls separata da virgole in un array
+    const sneakersWithImages = results.map((sneaker) => {
+      return {
+        ...sneaker,
+        image_urls: sneaker.image_urls ? sneaker.image_urls.split(",") : [],
+      };
+    }); //
 
     res.json({
-      results,
-    });
+      results: sneakersWithImages,
+    }); //
   });
 };
 
