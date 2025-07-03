@@ -2,6 +2,7 @@ const express = require("express");
 const sneaker = express.Router();
 const sneakersController = require("../controllers/sneakerscontroller.js");
 const popupDataValidation = require("../middleware/validationPopup.js");
+const checkoutValidation = require("../middleware/validationCheckout.js");
 // ROUTE LISTA DELLE SCARPE(INDEXALL)
 
 sneaker.get("", sneakersController.indexAll);
@@ -28,6 +29,10 @@ sneaker.post("/popup", popupDataValidation, sneakersController.postPopUp);
 
 // ROUTE PER DATI FATTURAZIONE CHECKOUT
 
-sneaker.post("/checkoutdata", sneakersController.postCheckOut);
+sneaker.post(
+  "/checkoutdata",
+  checkoutValidation,
+  sneakersController.postCheckOut
+);
 
 module.exports = sneaker;
