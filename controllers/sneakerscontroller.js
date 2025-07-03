@@ -30,6 +30,21 @@ LIMIT 5`;
     });
   });
 };
+// INDEX ULTIMI 5 ARRIVI
+
+const latestForHero = (req, res) => {
+  const sqlLatestSneakerForHero = `SELECT *
+FROM sneakers
+ORDER BY date_of_arrival DESC 
+LIMIT 1`;
+  connection.query(sqlLatestSneakerForHero, (err, results) => {
+    if (err) return res.status(500).json({ error: "Database query failed" });
+
+    res.json({
+      results,
+    });
+  });
+};
 
 // INDEX 5 SCARPE ECONOMICHE PIU ECONOMICHE
 
@@ -276,6 +291,7 @@ const itemsHtml = items.map((item) => `
 module.exports = {
   indexAll,
   indexLatest,
+  latestForHero,
   indexCheapest,
   show,
   postPopUp,
