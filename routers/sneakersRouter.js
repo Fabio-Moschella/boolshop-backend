@@ -16,7 +16,7 @@ sneaker.get("/Cheapest", sneakersController.indexCheapest);
 
 // ROUTE MOSTRA DETTAGLIO SCARPA (SHOW)
 
-sneaker.get("/:brand/:model", sneakersController.show);
+sneaker.get("/:slug", sneakersController.show);
 
 // ROUTE PER POP-UP DI BENVENUTO
 

@@ -50,40 +50,38 @@ LIMIT 5`;
 // DETTAGLIO SCARPA
 
 const show = (req, res) => {
-  const model = decodeURIComponent(req.params.model);
-  const brand = decodeURIComponent(req.params.brand);
+  const slug = decodeURIComponent(req.params.slug);
 
-  const sqlCurrentSneaker =
-    "SELECT * FROM sneakers WHERE brand = ?  AND model = ? ";
-  const sqRelatedSneaker =
-    "SELECT * FROM sneakers WHERE brand = ?  AND model != ? ";
+  const sqlCurrentSneaker = "SELECT * FROM sneakers WHERE slug = ?";
 
-  connection.query(
-    sqlCurrentSneaker,
-    [brand, model],
-    (err, currentSneakerResults) => {
-      if (err) return res.status(500).json({ error: "Database query failed" });
-      if (currentSneakerResults.length === 0)
-        return res.status(404).json({ error: "sneaker not found" });
+  connection.query(sqlCurrentSneaker, [slug], (err, currentSneakerResults) => {
+    if (err) return res.status(500).json({ error: "Database query failed" });
 
-      connection.query(
-        sqRelatedSneaker,
-        [brand, model],
-        (err, relatedSneakerResults) => {
-          if (err)
-            return res.status(500).json({ error: "Database query failed" });
-          if (relatedSneakerResults.length === 0)
-            return res.status(404).json({ error: "sneaker not found" });
+    if (currentSneakerResults.length === 0)
+      return res.status(404).json({ error: "Sneaker not found" });
 
-          const sneaker = {
-            ...currentSneakerResults[0],
-            relatedSneakerResults,
-          };
-          res.json({ sneaker });
-        }
-      );
-    }
-  );
+    const currentSneaker = currentSneakerResults[0];
+    const brand = currentSneaker.brand;
+
+    const sqlRelatedSneakers =
+      "SELECT * FROM sneakers WHERE brand = ? AND slug != ?";
+
+    connection.query(
+      sqlRelatedSneakers,
+      [brand, slug],
+      (err, relatedSneakersResults) => {
+        if (err)
+          return res.status(500).json({ error: "Database query failed" });
+
+        const sneaker = {
+          ...currentSneaker,
+          related: relatedSneakersResults,
+        };
+
+        res.json({ sneaker });
+      }
+    );
+  });
 };
 
 // post per dati del pop-up di benvenuto
