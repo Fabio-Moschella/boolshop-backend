@@ -99,21 +99,20 @@ const indexCheapest = (req, res) => {
     ORDER BY 
       s.price ASC 
     LIMIT 5;
-  `; //
+  `;
 
   connection.query(sqlCheapestSneaker, (err, results) => {
     if (err) {
-      console.error("Errore nella query al database:", err); // Logga l'errore per il debugging
-      return res.status(500).json({ error: "Errore nella query al database" }); //
+      console.error("Errore nella query al database:", err);
+      return res.status(500).json({ error: "Errore nella query al database" });
     }
 
-    // Elabora i risultati per trasformare la stringa di image_urls separata da virgole in un array
     const sneakersWithImages = results.map((sneaker) => {
       return {
         ...sneaker,
         image_urls: sneaker.image_urls ? sneaker.image_urls.split(",") : [],
       };
-    }); //
+    });
 
     res.json({
       results: sneakersWithImages,
@@ -128,35 +127,62 @@ const show = (req, res) => {
 
   const sqlCurrentSneaker = "SELECT * FROM sneakers WHERE slug = ?";
   const sqlImages = "SELECT url FROM images WHERE id_sneaker = ?";
-  const sqlRelatedSneakers =
-    "SELECT * FROM sneakers WHERE brand = ? AND slug != ?";
+  const sqlRelatedSneakers = `
+    SELECT 
+      sneakers.*, 
+      GROUP_CONCAT(images.url ORDER BY images.id_image ASC) AS image_urls
+    FROM 
+      sneakers
+    JOIN 
+      images ON sneakers.id_sneaker = images.id_sneaker
+    WHERE 
+      sneakers.brand = ? AND sneakers.slug != ?
+    GROUP BY
+      sneakers.id_sneaker
+    LIMIT 5;
+  `;
 
   connection.query(sqlCurrentSneaker, [slug], (err, currentSneakerResults) => {
-    if (err) return res.status(500).json({ error: "Database query failed" });
+    if (err)
+      return res.status(500).json({ error: "Errore nella query al database" });
 
     if (currentSneakerResults.length === 0)
-      return res.status(404).json({ error: "Sneaker not found" });
+      return res.status(404).json({ error: "Sneaker non trovata" });
 
     const currentSneaker = currentSneakerResults[0];
     const brand = currentSneaker.brand;
     const idSneaker = currentSneaker.id_sneaker;
 
-    // Prima otteniamo le immagini
     connection.query(sqlImages, [idSneaker], (err, imagesResults) => {
-      if (err) return res.status(500).json({ error: "Failed to fetch images" });
+      if (err)
+        return res
+          .status(500)
+          .json({ error: "Impossibile recuperare le immagini" });
 
-      // Poi otteniamo le sneaker correlate
       connection.query(
         sqlRelatedSneakers,
         [brand, slug],
         (err, relatedSneakersResults) => {
           if (err)
-            return res.status(500).json({ error: "Database query failed" });
+            return res
+              .status(500)
+              .json({ error: "Errore nella query al database" });
+
+          const processedRelatedSneakers = relatedSneakersResults.map(
+            (sneaker) => {
+              return {
+                ...sneaker,
+                image_urls: sneaker.image_urls
+                  ? sneaker.image_urls.split(",")
+                  : [],
+              };
+            }
+          );
 
           const sneaker = {
             ...currentSneaker,
             images: imagesResults.map((img) => img.url),
-            related: relatedSneakersResults,
+            related: processedRelatedSneakers,
           };
 
           res.json({ sneaker });
@@ -165,7 +191,6 @@ const show = (req, res) => {
     });
   });
 };
-
 // post per dati del pop-up di benvenuto
 
 const postPopUp = (req, res) => {
