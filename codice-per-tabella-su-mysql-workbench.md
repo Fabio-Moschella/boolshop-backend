@@ -31,10 +31,10 @@ CREATE TABLE `data_checkout` (
 `name` varchar(100) NOT NULL,
 `surname` varchar(100) NOT NULL,
 `address` varchar(255) NOT NULL,
-`phone` varchar(20) DEFAULT NULL,
+`phone` varchar(20) NOT NULL,
 `email` varchar(255) NOT NULL,
 PRIMARY KEY (`id_data_checkout`)
-) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=49 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /_!40101 SET character_set_client = @saved_cs_client _/;
 
 --
@@ -43,7 +43,6 @@ PRIMARY KEY (`id_data_checkout`)
 
 LOCK TABLES `data_checkout` WRITE;
 /_!40000 ALTER TABLE `data_checkout` DISABLE KEYS _/;
-INSERT INTO `data_checkout` VALUES (21,'Mario','Rossi','Via Roma 10, 00100 Roma','3331234567','maildiprova@gmail.com'),(22,'Mario','Rossi','Via Roma 10, 00100 Roma','3331234567','maildiprova@gmail.com'),(23,'Mario','Rossi','Via Roma 10, 00100 Roma','3331234567','maildiprova@gmail.com'),(24,'Mario','Rossi','Via Roma 10, 00100 Roma','3331234567','maildiprova@gmail.com'),(25,'Mario','Rossi','Via Roma 10, 00100 Roma','3331234567','maildiprova@gmail.com'),(26,'Mario','Rossi','Via Roma 10, 00100 Roma','3331234567','maildiprova@gmail.com'),(27,'Mario','Rossi','Via Roma 10, 00100 Roma','3331234567','maildiprova@gmail.com'),(28,'Mario','Rossi','Via Roma 10, 00100 Roma','3331234567','maildiprova@gmail.com'),(29,'Mario','Rossi','Via Roma 10, 00100 Roma','3331234567','boolean.144@gmail.com'),(30,'Mario','Rossi','Via Roma 10, 00100 Roma','3331234567','boolean.144@gmail.com'),(31,'Mario','Rossi','Via Roma 10, 00100 Roma','3331234567','boolean.144@gmail.com'),(32,'Mario','Rossi','Via Roma 10, 00100 Roma','3331234567','boolean.144@gmail.com'),(33,'Mario','Rossi','Via Roma 10, 00100 Roma','3331234567','boolean.144@gmail.com'),(34,'Mario','Rossi','Via Roma 10, 00100 Roma','3331234567','boolean.144@gmail.com'),(35,'Mario','Rossi','Via Roma 10, 00100 Roma','3331234567','boolean.144@gmail.com'),(36,'Mario','Rossi','Via Roma 10, 00100 Roma','3331234567','boolean.144@gmail.com'),(37,'Mario','Rossi','Via Roma 10, 00100 Roma','3331234567','boolean.144@gmail.com');
 /_!40000 ALTER TABLE `data_checkout` ENABLE KEYS _/;
 UNLOCK TABLES;
 
@@ -61,7 +60,7 @@ CREATE TABLE `data_popup` (
 `email` varchar(255) NOT NULL,
 PRIMARY KEY (`id_data_popup`),
 UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /_!40101 SET character_set_client = @saved_cs_client _/;
 
 --
@@ -70,7 +69,7 @@ UNIQUE KEY `email` (`email`)
 
 LOCK TABLES `data_popup` WRITE;
 /_!40000 ALTER TABLE `data_popup` DISABLE KEYS _/;
-INSERT INTO `data_popup` VALUES (24,'Mario','Rossi','boolean.144@gmail.com');
+INSERT INTO `data_popup` VALUES (26,'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa','Rossi','boolean.144@gmail.com');
 /_!40000 ALTER TABLE `data_popup` ENABLE KEYS _/;
 UNLOCK TABLES;
 
@@ -109,16 +108,16 @@ DROP TABLE IF EXISTS `order_size`;
 /_!40101 SET @saved_cs_client = @@character_set_client _/;
 /_!50503 SET character_set_client = utf8mb4 _/;
 CREATE TABLE `order_size` (
-`id_order_size` int NOT NULL AUTO_INCREMENT,
+`id_order_size` int NOT NULL,
 `id_size` int NOT NULL,
 `id_order` int NOT NULL,
-`quantity` int NOT NULL DEFAULT '1',
+`quantity` int unsigned NOT NULL,
 PRIMARY KEY (`id_order_size`),
 KEY `id_size` (`id_size`),
 KEY `id_order` (`id_order`),
 CONSTRAINT `order_size_ibfk_1` FOREIGN KEY (`id_size`) REFERENCES `sizes` (`id_size`) ON DELETE CASCADE,
 CONSTRAINT `order_size_ibfk_2` FOREIGN KEY (`id_order`) REFERENCES `orders` (`id_order`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /_!40101 SET character_set_client = @saved_cs_client _/;
 
 --
@@ -127,7 +126,6 @@ CONSTRAINT `order_size_ibfk_2` FOREIGN KEY (`id_order`) REFERENCES `orders` (`id
 
 LOCK TABLES `order_size` WRITE;
 /_!40000 ALTER TABLE `order_size` DISABLE KEYS _/;
-INSERT INTO `order_size` VALUES (3,1,13,1),(4,1,14,1),(5,1,15,1),(6,1,16,1),(7,1,17,1),(8,1,18,1),(9,1,19,1),(10,1,20,1),(11,1,21,1),(12,1,22,1),(13,1,23,1),(14,1,24,1),(15,1,25,1),(16,1,26,1),(17,1,27,1),(18,1,28,1),(19,1,29,-9);
 /_!40000 ALTER TABLE `order_size` ENABLE KEYS _/;
 UNLOCK TABLES;
 
@@ -142,11 +140,11 @@ CREATE TABLE `orders` (
 `id_order` int NOT NULL AUTO_INCREMENT,
 `id_data_checkout` int NOT NULL,
 `order_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-`total_price` decimal(10,2) NOT NULL,
+`total_price` decimal(10,2) unsigned NOT NULL,
 PRIMARY KEY (`id_order`),
 KEY `id_data_checkout` (`id_data_checkout`),
 CONSTRAINT `orders_ibfk_1` FOREIGN KEY (`id_data_checkout`) REFERENCES `data_checkout` (`id_data_checkout`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /_!40101 SET character_set_client = @saved_cs_client _/;
 
 --
@@ -155,7 +153,6 @@ CONSTRAINT `orders_ibfk_1` FOREIGN KEY (`id_data_checkout`) REFERENCES `data_che
 
 LOCK TABLES `orders` WRITE;
 /_!40000 ALTER TABLE `orders` DISABLE KEYS _/;
-INSERT INTO `orders` VALUES (13,21,'2025-07-03 10:27:00',130.00),(14,22,'2025-07-03 10:28:33',130.00),(15,23,'2025-07-03 10:32:51',130.00),(16,24,'2025-07-03 10:33:33',130.00),(17,25,'2025-07-03 10:33:56',130.00),(18,26,'2025-07-03 10:34:09',130.00),(19,27,'2025-07-03 10:34:40',130.00),(20,28,'2025-07-03 10:36:09',130.00),(21,29,'2025-07-03 10:38:28',130.00),(22,30,'2025-07-03 10:42:17',130.00),(23,31,'2025-07-03 10:45:47',130.00),(24,32,'2025-07-03 10:55:10',130.00),(25,33,'2025-07-03 10:55:37',130.00),(26,34,'2025-07-03 10:56:05',130.00),(27,35,'2025-07-03 10:57:21',130.00),(28,36,'2025-07-03 11:19:10',130.00),(29,37,'2025-07-03 11:22:25',-1170.00);
 /_!40000 ALTER TABLE `orders` ENABLE KEYS _/;
 UNLOCK TABLES;
 
@@ -200,7 +197,7 @@ CREATE TABLE `sneakers` (
 `slug` varchar(255) DEFAULT NULL,
 `description` text,
 `color` varchar(50) DEFAULT NULL,
-`price` decimal(10,2) NOT NULL,
+`price` decimal(10,2) unsigned NOT NULL,
 `gender` enum('Uomo','Donna','Unisex') NOT NULL,
 `date_of_arrival` date NOT NULL,
 PRIMARY KEY (`id_sneaker`)
@@ -234,4 +231,4 @@ UNLOCK TABLES;
 /_!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION _/;
 /_!40111 SET SQL_NOTES=@OLD_SQL_NOTES _/;
 
--- Dump completed on 2025-07-03 12:09:39
+-- Dump completed on 2025-07-03 17:33:16
