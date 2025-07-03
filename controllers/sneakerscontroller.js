@@ -30,7 +30,7 @@ LIMIT 5`;
     });
   });
 };
-// INDEX ULTIMI 5 ARRIVI
+// SHOW ULTIMO ARRIVO PER LA HERO
 
 const latestForHero = (req, res) => {
   const sqlLatestSneakerForHero = `SELECT *
