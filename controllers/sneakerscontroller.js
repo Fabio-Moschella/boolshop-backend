@@ -252,6 +252,10 @@ const postCheckOut = (req, res) => {
               const userHtml = `
             <h2>Ciao ${name} ${surname},</h2>
             <p>Grazie per il tuo ordine!</p>
+           <p>nome articolo: ${items[0].model}</p>
+            <p>taglia articolo: ${items[0].size}</p>
+            <p>quantità articolo: ${items[0].quantity}</p>
+            <p>prezzo articolo: ${items[0].price}</p>
             <p>Totale ordine: <strong>€${total_price.toFixed(2)}</strong></p>
             <p>Riceverai una email con i dettagli della spedizione.</p>
           `;
