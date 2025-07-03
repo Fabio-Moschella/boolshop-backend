@@ -4,17 +4,32 @@ const { sendEmail } = require("../services/emailService.js");
 // INDEX TUTTE LE SCARPE
 
 const indexAll = (req, res) => {
-  const sqlSneaker = "SELECT * FROM sneakers";
-
+  const sqlSneaker = `
+    SELECT 
+      s.id_sneaker,
+      s.brand,
+      s.model,
+      s.slug,
+      s.description,
+      s.color,
+      s.price,
+      s.gender,
+      s.date_of_arrival,
+      GROUP_CONCAT(i.url) AS images
+    FROM sneakers s
+    LEFT JOIN images i ON s.id_sneaker = i.id_sneaker
+    GROUP BY s.id_sneaker`;
   connection.query(sqlSneaker, (err, results) => {
     if (err) return res.status(500).json({ error: "Database query failed" });
 
-    res.json({
-      results,
-    });
+    const sneakersWithImages = results.map((sneaker) => ({
+      ...sneaker,
+      images: sneaker.images ? sneaker.images.split(",") : [],
+    }));
+
+    res.json({ results: sneakersWithImages });
   });
 };
-
 // INDEX ULTIMI 5 ARRIVI
 
 const indexLatest = (req, res) => {
@@ -53,6 +68,9 @@ const show = (req, res) => {
   const slug = decodeURIComponent(req.params.slug);
 
   const sqlCurrentSneaker = "SELECT * FROM sneakers WHERE slug = ?";
+  const sqlImages = "SELECT url FROM images WHERE id_sneaker = ?";
+  const sqlRelatedSneakers =
+    "SELECT * FROM sneakers WHERE brand = ? AND slug != ?";
 
   connection.query(sqlCurrentSneaker, [slug], (err, currentSneakerResults) => {
     if (err) return res.status(500).json({ error: "Database query failed" });
@@ -62,25 +80,30 @@ const show = (req, res) => {
 
     const currentSneaker = currentSneakerResults[0];
     const brand = currentSneaker.brand;
+    const idSneaker = currentSneaker.id_sneaker;
 
-    const sqlRelatedSneakers =
-      "SELECT * FROM sneakers WHERE brand = ? AND slug != ?";
+    // Prima otteniamo le immagini
+    connection.query(sqlImages, [idSneaker], (err, imagesResults) => {
+      if (err) return res.status(500).json({ error: "Failed to fetch images" });
 
-    connection.query(
-      sqlRelatedSneakers,
-      [brand, slug],
-      (err, relatedSneakersResults) => {
-        if (err)
-          return res.status(500).json({ error: "Database query failed" });
+      // Poi otteniamo le sneaker correlate
+      connection.query(
+        sqlRelatedSneakers,
+        [brand, slug],
+        (err, relatedSneakersResults) => {
+          if (err)
+            return res.status(500).json({ error: "Database query failed" });
 
-        const sneaker = {
-          ...currentSneaker,
-          related: relatedSneakersResults,
-        };
+          const sneaker = {
+            ...currentSneaker,
+            images: imagesResults.map((img) => img.url),
+            related: relatedSneakersResults,
+          };
 
-        res.json({ sneaker });
-      }
-    );
+          res.json({ sneaker });
+        }
+      );
+    });
   });
 };
 
@@ -225,14 +248,18 @@ const postCheckOut = (req, res) => {
           INSERT INTO order_size (id_size, id_order, quantity)
           VALUES ?
         `;
-          // email lato e-commerce
+            // email lato e-commerce
 
-const itemsHtml = items.map((item) => `
+            const itemsHtml = items
+              .map(
+                (item) => `
               <p>nome articolo: ${item.model}</p>
               <p>taglia articolo: ${item.size}</p>
               <p>quantità articolo: ${item.quantity}</p>
               <p>prezzo articolo: ${item.price}</p>
-              <br/>`).join("");
+              <br/>`
+              )
+              .join("");
             connection.query(queryOrderSize, [orderItems], (err) => {
               if (err)
                 return res
@@ -244,8 +271,8 @@ const itemsHtml = items.map((item) => `
             <h2>Ordine del cliente ${name} ${surname}</h2>
               ${itemsHtml}
             <p>Totale ordine: <strong>€${total_price.toFixed(2)}</strong></p> `;
-               
-          // email per il cliente
+
+              // email per il cliente
 
               sendEmail(process.env.EMAIL_USER, subject, text, html);
 
@@ -254,10 +281,7 @@ const itemsHtml = items.map((item) => `
               const userHtml = `
             <h2>Ciao ${name} ${surname},</h2>
             <p>Grazie per il tuo ordine!</p>
-            <p> ${itemsHtml}</p>`
-          ;
-     
-
+            <p> ${itemsHtml}</p>`;
               sendEmail(email, userSubject, userText, userHtml, () => {
                 return res.status(201).json({
                   message: "Ordine completato con successo",
