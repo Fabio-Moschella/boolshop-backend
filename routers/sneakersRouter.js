@@ -8,11 +8,15 @@ sneaker.get("", sneakersController.indexAll);
 
 // ROUTE LISTA ULTIMI 5 ARRIVI(INDEXLATEST)
 
-sneaker.get("/Latest", sneakersController.indexLatest);
+sneaker.get("/latest", sneakersController.indexLatest);
+
+// MOSTRA ULTIMO ARRIVO PER LA HERO
+
+sneaker.get("/showlast", sneakersController.latestForHero);
 
 // ROUTE LISTA 5 SCARPE ECONOMICHE(INDEXCHEAPEST)
 
-sneaker.get("/Cheapest", sneakersController.indexCheapest);
+sneaker.get("/cheapest", sneakersController.indexCheapest);
 
 // ROUTE MOSTRA DETTAGLIO SCARPA (SHOW)
 

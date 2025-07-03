@@ -45,6 +45,21 @@ LIMIT 5`;
     });
   });
 };
+// SHOW ULTIMO ARRIVO PER LA HERO
+
+const latestForHero = (req, res) => {
+  const sqlLatestSneakerForHero = `SELECT *
+FROM sneakers
+ORDER BY date_of_arrival DESC 
+LIMIT 1`;
+  connection.query(sqlLatestSneakerForHero, (err, results) => {
+    if (err) return res.status(500).json({ error: "Database query failed" });
+
+    res.json({
+      results,
+    });
+  });
+};
 
 // INDEX 5 SCARPE ECONOMICHE PIU ECONOMICHE
 
@@ -300,6 +315,7 @@ const postCheckOut = (req, res) => {
 module.exports = {
   indexAll,
   indexLatest,
+  latestForHero,
   indexCheapest,
   show,
   postPopUp,
