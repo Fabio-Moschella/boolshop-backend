@@ -27,15 +27,15 @@ DROP TABLE IF EXISTS `data_checkout`;
 /_!40101 SET @saved_cs_client = @@character_set_client _/;
 /_!50503 SET character_set_client = utf8mb4 _/;
 CREATE TABLE `data_checkout` (
-`id_data_checkout` int NOT NULL AUTO_INCREMENT,
+`id_data_checkout` int NOT NULL AUTO*INCREMENT,
 `name` varchar(100) NOT NULL,
 `surname` varchar(100) NOT NULL,
 `address` varchar(255) NOT NULL,
-`phone` varchar(20) DEFAULT NULL,
+`phone` varchar(20) NOT NULL,
 `email` varchar(255) NOT NULL,
 PRIMARY KEY (`id_data_checkout`)
-) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/_!40101 SET character_set_client = @saved_cs_client _/;
+) ENGINE=InnoDB AUTO_INCREMENT=49 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character*set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `data_checkout`
@@ -43,7 +43,6 @@ PRIMARY KEY (`id_data_checkout`)
 
 LOCK TABLES `data_checkout` WRITE;
 /_!40000 ALTER TABLE `data_checkout` DISABLE KEYS _/;
-INSERT INTO `data_checkout` VALUES (21,'Mario','Rossi','Via Roma 10, 00100 Roma','3331234567','maildiprova@gmail.com'),(22,'Mario','Rossi','Via Roma 10, 00100 Roma','3331234567','maildiprova@gmail.com'),(23,'Mario','Rossi','Via Roma 10, 00100 Roma','3331234567','maildiprova@gmail.com'),(24,'Mario','Rossi','Via Roma 10, 00100 Roma','3331234567','maildiprova@gmail.com'),(25,'Mario','Rossi','Via Roma 10, 00100 Roma','3331234567','maildiprova@gmail.com'),(26,'Mario','Rossi','Via Roma 10, 00100 Roma','3331234567','maildiprova@gmail.com'),(27,'Mario','Rossi','Via Roma 10, 00100 Roma','3331234567','maildiprova@gmail.com'),(28,'Mario','Rossi','Via Roma 10, 00100 Roma','3331234567','maildiprova@gmail.com'),(29,'Mario','Rossi','Via Roma 10, 00100 Roma','3331234567','boolean.144@gmail.com'),(30,'Mario','Rossi','Via Roma 10, 00100 Roma','3331234567','boolean.144@gmail.com'),(31,'Mario','Rossi','Via Roma 10, 00100 Roma','3331234567','boolean.144@gmail.com'),(32,'Mario','Rossi','Via Roma 10, 00100 Roma','3331234567','boolean.144@gmail.com'),(33,'Mario','Rossi','Via Roma 10, 00100 Roma','3331234567','boolean.144@gmail.com'),(34,'Mario','Rossi','Via Roma 10, 00100 Roma','3331234567','boolean.144@gmail.com'),(35,'Mario','Rossi','Via Roma 10, 00100 Roma','3331234567','boolean.144@gmail.com'),(36,'Mario','Rossi','Via Roma 10, 00100 Roma','3331234567','boolean.144@gmail.com'),(37,'Mario','Rossi','Via Roma 10, 00100 Roma','3331234567','boolean.144@gmail.com');
 /_!40000 ALTER TABLE `data_checkout` ENABLE KEYS _/;
 UNLOCK TABLES;
 
@@ -55,14 +54,14 @@ DROP TABLE IF EXISTS `data_popup`;
 /_!40101 SET @saved_cs_client = @@character_set_client _/;
 /_!50503 SET character_set_client = utf8mb4 _/;
 CREATE TABLE `data_popup` (
-`id_data_popup` int NOT NULL AUTO_INCREMENT,
+`id_data_popup` int NOT NULL AUTO*INCREMENT,
 `name` varchar(100) NOT NULL,
 `surname` varchar(100) NOT NULL,
 `email` varchar(255) NOT NULL,
 PRIMARY KEY (`id_data_popup`),
 UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/_!40101 SET character_set_client = @saved_cs_client _/;
+) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character*set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `data_popup`
@@ -70,7 +69,7 @@ UNIQUE KEY `email` (`email`)
 
 LOCK TABLES `data_popup` WRITE;
 /_!40000 ALTER TABLE `data_popup` DISABLE KEYS _/;
-INSERT INTO `data_popup` VALUES (24,'Mario','Rossi','boolean.144@gmail.com');
+INSERT INTO `data_popup` VALUES (26,'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa','Rossi','boolean.144@gmail.com');
 /_!40000 ALTER TABLE `data_popup` ENABLE KEYS _/;
 UNLOCK TABLES;
 
@@ -82,14 +81,14 @@ DROP TABLE IF EXISTS `images`;
 /_!40101 SET @saved_cs_client = @@character_set_client _/;
 /_!50503 SET character_set_client = utf8mb4 _/;
 CREATE TABLE `images` (
-`id_image` int NOT NULL AUTO_INCREMENT,
+`id_image` int NOT NULL AUTO*INCREMENT,
 `id_sneaker` int NOT NULL,
 `url` varchar(255) NOT NULL,
 PRIMARY KEY (`id_image`),
 KEY `id_sneaker` (`id_sneaker`),
 CONSTRAINT `images_ibfk_1` FOREIGN KEY (`id_sneaker`) REFERENCES `sneakers` (`id_sneaker`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=94 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/_!40101 SET character_set_client = @saved_cs_client _/;
+/*!40101 SET character*set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `images`
@@ -97,8 +96,8 @@ CONSTRAINT `images_ibfk_1` FOREIGN KEY (`id_sneaker`) REFERENCES `sneakers` (`id
 
 LOCK TABLES `images` WRITE;
 /_!40000 ALTER TABLE `images` DISABLE KEYS _/;
-INSERT INTO `images` VALUES (1,11,'Nike_Dunk_Low_Retro.jpg'),(2,11,'Nike_Dunk_Low_Retro1.jpg'),(3,11,'Nike_Dunk_Low_Retro2.jpg'),(4,11,'Nike_Dunk_Low_Retro3.jpg'),(5,17,'Reebok_Classic_LEATHER.jpg'),(6,17,'Reebok_Classic_LEATHER1.jpg'),(7,17,'Reebok_Classic_LEATHER2.jpg'),(8,16,'Vans_SK8_Hi.jpg'),(9,16,'Vans_SK8_Hi1.jpg'),(10,16,'Vans_SK8_Hi2.jpg'),(11,12,'adidas_forum_low.jpg'),(12,12,'adidas_forum_low1.jpg'),(13,12,'adidas_forum_low2.jpg'),(14,22,'adidas_gazelle.jpg'),(15,22,'adidas_gazelle1.jpg'),(16,22,'adidas_gazelle2.jpg'),(17,2,'adidas_ultraboost_22.jpg'),(18,2,'adidas_ultraboost_22_1.jpg'),(19,2,'adidas_ultraboost_22_2.jpg'),(20,8,'asics_gel_kayano30.jpg'),(21,8,'asics_gel_kayano30_1.jpg'),(22,8,'asics_gel_kayano30_2.jpg'),(23,18,'asics_gel_nyc.jpg'),(24,18,'asics_gel_nyc1.jpg'),(25,18,'asics_gel_nyc2.jpg'),(26,28,'asics_gt2160.jpg'),(27,28,'asics_gt2160_1.jpg'),(28,28,'asics_gt2160_3.jpg'),(29,5,'converce_chuck_taylor_all_star.jpg'),(30,5,'converce_chuck_taylor_all_star_1.jpg'),(31,5,'converce_chuck_taylor_all_star_2.jpg'),(32,25,'converse_chuck70.jpg'),(33,25,'converse_chuck70_1.jpg'),(34,25,'converse_chuck70_2.jpg'),(35,25,'converse_chuck70_3.jpg'),(36,15,'converse_run_star_hike.jpg'),(37,15,'converse_run_star_hike1.jpg'),(38,15,'converse_run_star_hike2.jpg'),(39,29,'fila_barricade_xr97 (1).jpg'),(40,29,'fila_barricade_xr97 (2).jpg'),(41,29,'fila_barricade_xr97 (3).jpg'),(42,9,'fila_disruptor.jpg'),(43,9,'fila_disruptor_1.jpg'),(44,9,'fila_disruptor_2.jpg'),(45,19,'fila_ray_tracer.jpg'),(46,19,'fila_ray_tracer1.jpg'),(47,19,'fila_ray_tracer2.jpg'),(48,24,'new_balance_2002r.jpg'),(49,24,'new_balance_2002r_1.jpg'),(50,24,'new_balance_2002r_2.jpg'),(51,14,'new_balance_990v6.jpg'),(52,14,'new_balance_990v6_1.jpg'),(53,14,'new_balance_990v6_2.jpg'),(54,4,'new_balance_core574.jpg'),(55,4,'new_balance_core574_1.jpg'),(56,4,'new_balance_core574_2.jpg'),(57,21,'nike_air_force1.jpg'),(58,21,'nike_air_force1_2.jpg'),(59,21,'nike_air_force1_3.jpg'),(60,1,'nike_air_max_90.jpg'),(61,1,'nike_air_max_90_1.jpg'),(62,1,'nike_air_max_90_2.jpg'),(63,23,'puma_palermo_special.jpg'),(64,23,'puma_palermo_special1.jpg'),(65,23,'puma_palermo_special2.jpg'),(66,13,'puma_rsx_efekt.jpg'),(67,13,'puma_rsx_efekt1.jpg'),(68,13,'puma_rsx_efekt2.jpg'),(69,3,'puma_suede_classic.jpg'),(70,3,'puma_suede_classic_1.jpg'),(71,3,'puma_suede_classic_2.jpg'),(72,7,'reebok_classic_c85.jpg'),(73,7,'reebok_classic_c85_1.jpg'),(74,7,'reebok_classic_c85_2.jpg'),(75,27,'reebok_instapump_fury.jpg'),(76,27,'reebok_instapump_fury1.jpg'),(77,27,'reebok_instapump_fury2.jpg'),(78,20,'under_armour_curry.jpg'),(79,20,'under_armour_curry1.jpeg'),(80,20,'under_armour_curry2.jpeg'),(81,10,'under_armour_flow_velociti_wind.jpg'),(82,10,'under_armour_flow_velociti_wind_1.jpg'),(83,10,'under_armour_flow_velociti_wind_2.jpg'),(84,30,'under_armour_machina.jpeg'),(85,30,'under_armour_machina1.jpg'),(86,30,'under_armour_machina3.jpeg'),(87,26,'vans_authentic.jpg'),(88,26,'vans_authentic1.jpg'),(89,26,'vans_authentic2.jpg'),(90,26,'vans_authentic3.jpg'),(91,6,'vans_old_skool.jpg'),(92,6,'vans_old_skool_1.jpg'),(93,6,'vans_old_skool_2.jpg');
-/_!40000 ALTER TABLE `images` ENABLE KEYS _/;
+INSERT INTO `images` VALUES (1,11,'Nike*Dunk_Low_Retro.jpg'),(2,11,'Nike_Dunk_Low_Retro1.jpg'),(3,11,'Nike_Dunk_Low_Retro2.jpg'),(4,11,'Nike_Dunk_Low_Retro3.jpg'),(5,17,'Reebok_Classic_LEATHER.jpg'),(6,17,'Reebok_Classic_LEATHER1.jpg'),(7,17,'Reebok_Classic_LEATHER2.jpg'),(8,16,'Vans_SK8_Hi.jpg'),(9,16,'Vans_SK8_Hi1.jpg'),(10,16,'Vans_SK8_Hi2.jpg'),(11,12,'adidas_forum_low.jpg'),(12,12,'adidas_forum_low1.jpg'),(13,12,'adidas_forum_low2.jpg'),(14,22,'adidas_gazelle.jpg'),(15,22,'adidas_gazelle1.jpg'),(16,22,'adidas_gazelle2.jpg'),(17,2,'adidas_ultraboost_22.jpg'),(18,2,'adidas_ultraboost_22_1.jpg'),(19,2,'adidas_ultraboost_22_2.jpg'),(20,8,'asics_gel_kayano30.jpg'),(21,8,'asics_gel_kayano30_1.jpg'),(22,8,'asics_gel_kayano30_2.jpg'),(23,18,'asics_gel_nyc.jpg'),(24,18,'asics_gel_nyc1.jpg'),(25,18,'asics_gel_nyc2.jpg'),(26,28,'asics_gt2160.jpg'),(27,28,'asics_gt2160_1.jpg'),(28,28,'asics_gt2160_3.jpg'),(29,5,'converce_chuck_taylor_all_star.jpg'),(30,5,'converce_chuck_taylor_all_star_1.jpg'),(31,5,'converce_chuck_taylor_all_star_2.jpg'),(32,25,'converse_chuck70.jpg'),(33,25,'converse_chuck70_1.jpg'),(34,25,'converse_chuck70_2.jpg'),(35,25,'converse_chuck70_3.jpg'),(36,15,'converse_run_star_hike.jpg'),(37,15,'converse_run_star_hike1.jpg'),(38,15,'converse_run_star_hike2.jpg'),(39,29,'fila_barricade_xr97 (1).jpg'),(40,29,'fila_barricade_xr97 (2).jpg'),(41,29,'fila_barricade_xr97 (3).jpg'),(42,9,'fila_disruptor.jpg'),(43,9,'fila_disruptor_1.jpg'),(44,9,'fila_disruptor_2.jpg'),(45,19,'fila_ray_tracer.jpg'),(46,19,'fila_ray_tracer1.jpg'),(47,19,'fila_ray_tracer2.jpg'),(48,24,'new_balance_2002r.jpg'),(49,24,'new_balance_2002r_1.jpg'),(50,24,'new_balance_2002r_2.jpg'),(51,14,'new_balance_990v6.jpg'),(52,14,'new_balance_990v6_1.jpg'),(53,14,'new_balance_990v6_2.jpg'),(54,4,'new_balance_core574.jpg'),(55,4,'new_balance_core574_1.jpg'),(56,4,'new_balance_core574_2.jpg'),(57,21,'nike_air_force1.jpg'),(58,21,'nike_air_force1_2.jpg'),(59,21,'nike_air_force1_3.jpg'),(60,1,'nike_air_max_90.jpg'),(61,1,'nike_air_max_90_1.jpg'),(62,1,'nike_air_max_90_2.jpg'),(63,23,'puma_palermo_special.jpg'),(64,23,'puma_palermo_special1.jpg'),(65,23,'puma_palermo_special2.jpg'),(66,13,'puma_rsx_efekt.jpg'),(67,13,'puma_rsx_efekt1.jpg'),(68,13,'puma_rsx_efekt2.jpg'),(69,3,'puma_suede_classic.jpg'),(70,3,'puma_suede_classic_1.jpg'),(71,3,'puma_suede_classic_2.jpg'),(72,7,'reebok_classic_c85.jpg'),(73,7,'reebok_classic_c85_1.jpg'),(74,7,'reebok_classic_c85_2.jpg'),(75,27,'reebok_instapump_fury.jpg'),(76,27,'reebok_instapump_fury1.jpg'),(77,27,'reebok_instapump_fury2.jpg'),(78,20,'under_armour_curry.jpg'),(79,20,'under_armour_curry1.jpeg'),(80,20,'under_armour_curry2.jpeg'),(81,10,'under_armour_flow_velociti_wind.jpg'),(82,10,'under_armour_flow_velociti_wind_1.jpg'),(83,10,'under_armour_flow_velociti_wind_2.jpg'),(84,30,'under_armour_machina.jpeg'),(85,30,'under_armour_machina1.jpg'),(86,30,'under_armour_machina3.jpeg'),(87,26,'vans_authentic.jpg'),(88,26,'vans_authentic1.jpg'),(89,26,'vans_authentic2.jpg'),(90,26,'vans_authentic3.jpg'),(91,6,'vans_old_skool.jpg'),(92,6,'vans_old_skool_1.jpg'),(93,6,'vans_old_skool_2.jpg');
+/*!40000 ALTER TABLE `images` ENABLE KEYS \_/;
 UNLOCK TABLES;
 
 --
@@ -109,17 +108,17 @@ DROP TABLE IF EXISTS `order_size`;
 /_!40101 SET @saved_cs_client = @@character_set_client _/;
 /_!50503 SET character_set_client = utf8mb4 _/;
 CREATE TABLE `order_size` (
-`id_order_size` int NOT NULL AUTO_INCREMENT,
+`id_order_size` int NOT NULL,
 `id_size` int NOT NULL,
 `id_order` int NOT NULL,
-`quantity` int NOT NULL DEFAULT '1',
+`quantity` int unsigned NOT NULL,
 PRIMARY KEY (`id_order_size`),
 KEY `id_size` (`id_size`),
 KEY `id_order` (`id_order`),
 CONSTRAINT `order_size_ibfk_1` FOREIGN KEY (`id_size`) REFERENCES `sizes` (`id_size`) ON DELETE CASCADE,
 CONSTRAINT `order_size_ibfk_2` FOREIGN KEY (`id_order`) REFERENCES `orders` (`id_order`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/_!40101 SET character_set_client = @saved_cs_client _/;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4*0900_ai_ci;
+/*!40101 SET character*set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `order_size`
@@ -127,7 +126,6 @@ CONSTRAINT `order_size_ibfk_2` FOREIGN KEY (`id_order`) REFERENCES `orders` (`id
 
 LOCK TABLES `order_size` WRITE;
 /_!40000 ALTER TABLE `order_size` DISABLE KEYS _/;
-INSERT INTO `order_size` VALUES (3,1,13,1),(4,1,14,1),(5,1,15,1),(6,1,16,1),(7,1,17,1),(8,1,18,1),(9,1,19,1),(10,1,20,1),(11,1,21,1),(12,1,22,1),(13,1,23,1),(14,1,24,1),(15,1,25,1),(16,1,26,1),(17,1,27,1),(18,1,28,1),(19,1,29,-9);
 /_!40000 ALTER TABLE `order_size` ENABLE KEYS _/;
 UNLOCK TABLES;
 
@@ -139,15 +137,15 @@ DROP TABLE IF EXISTS `orders`;
 /_!40101 SET @saved_cs_client = @@character_set_client _/;
 /_!50503 SET character_set_client = utf8mb4 _/;
 CREATE TABLE `orders` (
-`id_order` int NOT NULL AUTO_INCREMENT,
+`id_order` int NOT NULL AUTO*INCREMENT,
 `id_data_checkout` int NOT NULL,
 `order_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-`total_price` decimal(10,2) NOT NULL,
+`total_price` decimal(10,2) unsigned NOT NULL,
 PRIMARY KEY (`id_order`),
 KEY `id_data_checkout` (`id_data_checkout`),
 CONSTRAINT `orders_ibfk_1` FOREIGN KEY (`id_data_checkout`) REFERENCES `data_checkout` (`id_data_checkout`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/_!40101 SET character_set_client = @saved_cs_client _/;
+) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character*set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `orders`
@@ -155,7 +153,6 @@ CONSTRAINT `orders_ibfk_1` FOREIGN KEY (`id_data_checkout`) REFERENCES `data_che
 
 LOCK TABLES `orders` WRITE;
 /_!40000 ALTER TABLE `orders` DISABLE KEYS _/;
-INSERT INTO `orders` VALUES (13,21,'2025-07-03 10:27:00',130.00),(14,22,'2025-07-03 10:28:33',130.00),(15,23,'2025-07-03 10:32:51',130.00),(16,24,'2025-07-03 10:33:33',130.00),(17,25,'2025-07-03 10:33:56',130.00),(18,26,'2025-07-03 10:34:09',130.00),(19,27,'2025-07-03 10:34:40',130.00),(20,28,'2025-07-03 10:36:09',130.00),(21,29,'2025-07-03 10:38:28',130.00),(22,30,'2025-07-03 10:42:17',130.00),(23,31,'2025-07-03 10:45:47',130.00),(24,32,'2025-07-03 10:55:10',130.00),(25,33,'2025-07-03 10:55:37',130.00),(26,34,'2025-07-03 10:56:05',130.00),(27,35,'2025-07-03 10:57:21',130.00),(28,36,'2025-07-03 11:19:10',130.00),(29,37,'2025-07-03 11:22:25',-1170.00);
 /_!40000 ALTER TABLE `orders` ENABLE KEYS _/;
 UNLOCK TABLES;
 
@@ -167,14 +164,14 @@ DROP TABLE IF EXISTS `sizes`;
 /_!40101 SET @saved_cs_client = @@character_set_client _/;
 /_!50503 SET character_set_client = utf8mb4 _/;
 CREATE TABLE `sizes` (
-`id_size` int NOT NULL AUTO_INCREMENT,
+`id_size` int NOT NULL AUTO*INCREMENT,
 `id_sneaker` int NOT NULL,
 `size` varchar(10) NOT NULL,
 PRIMARY KEY (`id_size`),
 KEY `sizes_ibfk_1` (`id_sneaker`),
 CONSTRAINT `sizes_ibfk_1` FOREIGN KEY (`id_sneaker`) REFERENCES `sneakers` (`id_sneaker`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=91 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/_!40101 SET character_set_client = @saved_cs_client _/;
+/*!40101 SET character*set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `sizes`
@@ -194,18 +191,18 @@ DROP TABLE IF EXISTS `sneakers`;
 /_!40101 SET @saved_cs_client = @@character_set_client _/;
 /_!50503 SET character_set_client = utf8mb4 _/;
 CREATE TABLE `sneakers` (
-`id_sneaker` int NOT NULL AUTO_INCREMENT,
+`id_sneaker` int NOT NULL AUTO*INCREMENT,
 `brand` varchar(100) NOT NULL,
 `model` varchar(100) NOT NULL,
 `slug` varchar(255) DEFAULT NULL,
 `description` text,
 `color` varchar(50) DEFAULT NULL,
-`price` decimal(10,2) NOT NULL,
+`price` decimal(10,2) unsigned NOT NULL,
 `gender` enum('Uomo','Donna','Unisex') NOT NULL,
 `date_of_arrival` date NOT NULL,
 PRIMARY KEY (`id_sneaker`)
 ) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/_!40101 SET character_set_client = @saved_cs_client _/;
+/*!40101 SET character*set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `sneakers`
@@ -222,9 +219,9 @@ UNLOCK TABLES;
 --
 
 --
--- Dumping routines for database 'bool_shop'
+-- Dumping routines for database 'bool*shop'
 --
-/_!40103 SET TIME_ZONE=@OLD_TIME_ZONE _/;
+/*!40103 SET TIME*ZONE=@OLD_TIME_ZONE */;
 
 /_!40101 SET SQL_MODE=@OLD_SQL_MODE _/;
 /_!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS _/;
@@ -234,4 +231,4 @@ UNLOCK TABLES;
 /_!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION _/;
 /_!40111 SET SQL_NOTES=@OLD_SQL_NOTES _/;
 
--- Dump completed on 2025-07-03 12:09:39
+-- Dump completed on 2025-07-03 17:33:16
