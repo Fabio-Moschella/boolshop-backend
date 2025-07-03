@@ -227,7 +227,14 @@ const postCheckOut = (req, res) => {
           INSERT INTO order_size (id_size, id_order, quantity)
           VALUES ?
         `;
+          // email lato e-commerce
 
+const itemsHtml = items.map((item) => `
+              <p>nome articolo: ${item.model}</p>
+              <p>taglia articolo: ${item.size}</p>
+              <p>quantità articolo: ${item.quantity}</p>
+              <p>prezzo articolo: ${item.price}</p>
+              <br/>`).join("");
             connection.query(queryOrderSize, [orderItems], (err) => {
               if (err)
                 return res
@@ -236,14 +243,11 @@ const postCheckOut = (req, res) => {
               const subject = "Conferma ordine - bool_shop";
               const text = `Grazie per il tuo ordine, ${name} ${surname}!`;
               const html = `
-            <h2>Oridne del cliente ${name} ${surname}</h2>
-            <p>nome articolo: ${items[0].model}</p>
-            <p>taglia articolo: ${items[0].size}</p>
-            <p>quantità articolo: ${items[0].quantity}</p>
-            <p>prezzo articolo: ${items[0].price}</p>
-            <p>Totale ordine: <strong>€${total_price.toFixed(2)}</strong></p>
-           
-          `;
+            <h2>Ordine del cliente ${name} ${surname}</h2>
+              ${itemsHtml}
+            <p>Totale ordine: <strong>€${total_price.toFixed(2)}</strong></p> `;
+               
+          // email per il cliente
 
               sendEmail(process.env.EMAIL_USER, subject, text, html);
 
@@ -252,13 +256,9 @@ const postCheckOut = (req, res) => {
               const userHtml = `
             <h2>Ciao ${name} ${surname},</h2>
             <p>Grazie per il tuo ordine!</p>
-           <p>nome articolo: ${items[0].model}</p>
-            <p>taglia articolo: ${items[0].size}</p>
-            <p>quantità articolo: ${items[0].quantity}</p>
-            <p>prezzo articolo: ${items[0].price}</p>
-            <p>Totale ordine: <strong>€${total_price.toFixed(2)}</strong></p>
-            <p>Riceverai una email con i dettagli della spedizione.</p>
-          `;
+            <p> ${itemsHtml}</p>`
+          ;
+     
 
               sendEmail(email, userSubject, userText, userHtml, () => {
                 return res.status(201).json({
