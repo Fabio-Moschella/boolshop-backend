@@ -236,10 +236,13 @@ const postCheckOut = (req, res) => {
               const subject = "Conferma ordine - bool_shop";
               const text = `Grazie per il tuo ordine, ${name} ${surname}!`;
               const html = `
-            <h2>Ciao ${name} ${surname},</h2>
-            <p>ordine ricevuto!</p>
+            <h2>Oridne del cliente ${name} ${surname}</h2>
+            <p>nome articolo: ${items[0].model}</p>
+            <p>taglia articolo: ${items[0].size}</p>
+            <p>quantità articolo: ${items[0].quantity}</p>
+            <p>prezzo articolo: ${items[0].price}</p>
             <p>Totale ordine: <strong>€${total_price.toFixed(2)}</strong></p>
-            <p>Riceverai una email con i dettagli della spedizione.</p>
+           
           `;
 
               sendEmail(process.env.EMAIL_USER, subject, text, html);
