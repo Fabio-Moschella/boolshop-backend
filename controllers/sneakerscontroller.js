@@ -88,16 +88,20 @@ LIMIT 1`;
 const indexCheapest = (req, res) => {
   const sqlCheapestSneaker = `
     SELECT 
-      s.*, 
-      GROUP_CONCAT(i.url ORDER BY i.id_image ASC) AS image_urls
-    FROM 
-      sneakers s
-    JOIN 
-      images i ON s.id_sneaker = i.id_sneaker
-    GROUP BY
-      s.id_sneaker
-    ORDER BY 
-      s.price ASC 
+      sneakers.id_sneaker,
+      sneakers.brand,
+      sneakers.model,
+      sneakers.description,
+      sneakers.color,
+      sneakers.price,
+      sneakers.gender,
+      sneakers.date_of_arrival,
+      sneakers.slug,
+      GROUP_CONCAT(images.url ORDER BY images.id_image ASC) 
+    FROM sneakers
+    JOIN images ON sneakers.id_sneaker = images.id_sneaker
+    GROUP BY sneakers.id_sneaker
+    ORDER BY sneakers.price ASC
     LIMIT 5;
   `;
 
@@ -108,20 +112,27 @@ const indexCheapest = (req, res) => {
     }
 
     const sneakersWithImages = results.map((sneaker) => {
+      const imageField = Object.keys(sneaker).find((k) =>
+        k.startsWith("GROUP_CONCAT")
+      );
+      const imageUrls = sneaker[imageField]
+        ? sneaker[imageField].split(",")
+        : [];
+
+      // Rimuovi il campo GROUP_CONCAT dalla risposta
+      delete sneaker[imageField];
+
       return {
         ...sneaker,
-        image_urls: sneaker.image_urls ? sneaker.image_urls.split(",") : [],
+        image_urls: imageUrls.map((url) => `http://localhost:3000/img/${url}`),
       };
     });
 
     res.json({
       results: sneakersWithImages,
-    }); //
+    });
   });
 };
-
-// DETTAGLIO SCARPA
-
 const show = (req, res) => {
   const slug = decodeURIComponent(req.params.slug);
 
@@ -168,20 +179,31 @@ const show = (req, res) => {
               .status(500)
               .json({ error: "Errore nella query al database" });
 
+          // ➕ Aggiunge http://localhost:3000/img/ a ogni URL delle correlate
           const processedRelatedSneakers = relatedSneakersResults.map(
             (sneaker) => {
+              const urls = sneaker.image_urls
+                ? sneaker.image_urls
+                    .split(",")
+                    .map((url) => `http://localhost:3000/img/${url}`)
+                : [];
+
+              // Rimuovi campo originale se vuoi (opzionale)
+              delete sneaker.image_urls;
+
               return {
                 ...sneaker,
-                image_urls: sneaker.image_urls
-                  ? sneaker.image_urls.split(",")
-                  : [],
+                image_urls: urls,
               };
             }
           );
 
+          // ➕ Aggiunge http://localhost:3000/img/ anche alle immagini della sneaker corrente
           const sneaker = {
             ...currentSneaker,
-            images: imagesResults.map((img) => img.url),
+            images: imagesResults.map(
+              (img) => `http://localhost:3000/img/${img.url}`
+            ),
             related: processedRelatedSneakers,
           };
 
@@ -191,7 +213,6 @@ const show = (req, res) => {
     });
   });
 };
-// post per dati del pop-up di benvenuto
 
 const postPopUp = (req, res) => {
   const { name, surname, email } = req.body;
