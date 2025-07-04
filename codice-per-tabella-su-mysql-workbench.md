@@ -27,14 +27,14 @@ DROP TABLE IF EXISTS `data_checkout`;
 /_!40101 SET @saved_cs_client = @@character_set_client _/;
 /_!50503 SET character_set_client = utf8mb4 _/;
 CREATE TABLE `data_checkout` (
-`id_data_checkout` int NOT NULL AUTO*INCREMENT,
+`id_data_checkout` int NOT NULL AUTO\*INCREMENT,
 `name` varchar(100) NOT NULL,
 `surname` varchar(100) NOT NULL,
 `address` varchar(255) NOT NULL,
 `phone` varchar(20) NOT NULL,
 `email` varchar(255) NOT NULL,
 PRIMARY KEY (`id_data_checkout`)
-) ENGINE=InnoDB AUTO_INCREMENT=49 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO*INCREMENT=38 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character*set_client = @saved_cs_client */;
 
 --
@@ -54,13 +54,13 @@ DROP TABLE IF EXISTS `data_popup`;
 /_!40101 SET @saved_cs_client = @@character_set_client _/;
 /_!50503 SET character_set_client = utf8mb4 _/;
 CREATE TABLE `data_popup` (
-`id_data_popup` int NOT NULL AUTO*INCREMENT,
+`id_data_popup` int NOT NULL AUTO\*INCREMENT,
 `name` varchar(100) NOT NULL,
 `surname` varchar(100) NOT NULL,
 `email` varchar(255) NOT NULL,
 PRIMARY KEY (`id_data_popup`),
 UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO*INCREMENT=26 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character*set_client = @saved_cs_client */;
 
 --
@@ -117,7 +117,7 @@ KEY `id_size` (`id_size`),
 KEY `id_order` (`id_order`),
 CONSTRAINT `order_size_ibfk_1` FOREIGN KEY (`id_size`) REFERENCES `sizes` (`id_size`) ON DELETE CASCADE,
 CONSTRAINT `order_size_ibfk_2` FOREIGN KEY (`id_order`) REFERENCES `orders` (`id_order`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4*0900_ai_ci;
+) ENGINE=InnoDB AUTO*INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character*set_client = @saved_cs_client */;
 
 --
@@ -137,14 +137,14 @@ DROP TABLE IF EXISTS `orders`;
 /_!40101 SET @saved_cs_client = @@character_set_client _/;
 /_!50503 SET character_set_client = utf8mb4 _/;
 CREATE TABLE `orders` (
-`id_order` int NOT NULL AUTO*INCREMENT,
+`id_order` int NOT NULL AUTO\*INCREMENT,
 `id_data_checkout` int NOT NULL,
-`order_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+`order_date` datetime NOT NULL DEFAULT CURRENT*TIMESTAMP,
 `total_price` decimal(10,2) unsigned NOT NULL,
 PRIMARY KEY (`id_order`),
 KEY `id_data_checkout` (`id_data_checkout`),
 CONSTRAINT `orders_ibfk_1` FOREIGN KEY (`id_data_checkout`) REFERENCES `data_checkout` (`id_data_checkout`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character*set_client = @saved_cs_client */;
 
 --
