@@ -30,9 +30,7 @@ const indexAll = (req, res) => {
 
     const sneakersWithUrls = sneakersWithImages.map((sneaker) => ({
       ...sneaker,
-      images: sneaker.images.map(
-        (img) => `http://localhost:3000/sneakers/img/${img}`
-      ),
+      images: sneaker.images.map((img) => `http://localhost:3000/img/${img}`),
     }));
 
     res.json(sneakersWithUrls);
