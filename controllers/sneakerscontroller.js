@@ -59,15 +59,18 @@ const indexLatest = (req, res) => {
 
   connection.query(sqlLatestSneaker, (err, results) => {
     if (err) {
-      console.error("Errore nella query al database:", err); // Logga l'errore per il debugging
+      console.error("Errore nella query al database:", err);
       return res.status(500).json({ error: "Errore nella query al database" });
     }
 
-    // Elabora i risultati per trasformare la stringa di image_urls separata da virgole in un array
     const sneakersWithImages = results.map((sneaker) => {
       return {
         ...sneaker,
-        image_urls: sneaker.image_urls ? sneaker.image_urls.split(",") : [],
+        image_urls: sneaker.image_urls
+          ? sneaker.image_urls
+              .split(",")
+              .map((url) => `http://localhost:3000/img/${url.trim()}`)
+          : [],
       };
     });
 
