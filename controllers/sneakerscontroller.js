@@ -297,16 +297,24 @@ const postCheckOut = (req, res) => {
      if (address.length < 2) {
     errors.push({ message: `L'indirizzo non può contenere meno di 2 caratteri(numero attuale caratteri: ${name.length})` });
   }
-  if (address.length > 70) {
+  if (address.length > 100) {
     errors.push({ message: `L'indirizzo non può contenere più di caratteri(numero attuale caratteri: ${name.length})` });
   }
   if (typeof address !== 'string') {
   errors.push({ message: "Il campo dell'indirizzo deve essere una stringa" });
 }
   if (!phone)
-    errors.push({ message: "controlla i dati immessi nel campo phone" });
+    errors.push({ message: "controlla i dati immessi nel campo numero di telefono" });
+  if (phone.length < 8 )
+    errors.push({ message: `il numero di telefono non può contenere meno di 8 caratteri(numero attuale di caratteri: ${phone.length}` });
+  if (phone.length > 30 )
+    errors.push({ message: `il numero di telefono non può contenere più di caratteri(numero attuale di caratteri: ${phone.length}` });
   if (!email)
     errors.push({ message: "controlla i dati immessi nel campo e-mail" });
+  if (email.length < 8 )
+    errors.push({ message: `l'email non può contenere meno di 8 caratteri(numero attuale di caratteri: ${email.length}` });
+  if (email.length > 30 )
+    errors.push({ message: `l'email non può contenere più di caratteri(numero attuale di caratteri: ${email.length}` });
   if (!Array.isArray(items) || !items.length) {
     errors.push({ message: "Il carrello è vuoto." });
   }
