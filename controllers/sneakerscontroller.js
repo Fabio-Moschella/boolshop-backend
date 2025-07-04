@@ -64,8 +64,8 @@ const indexLatest = (req, res) => {
         ...sneaker,
         images: sneaker.images
           ? sneaker.images
-              .split(",")
-              .map((url) => `http://localhost:3000/img/${url.trim()}`)
+            .split(",")
+            .map((url) => `http://localhost:3000/img/${url.trim()}`)
           : [],
       };
     });
@@ -104,8 +104,8 @@ const latestForHero = (req, res) => {
         ...sneaker,
         images: sneaker.images
           ? sneaker.images
-              .split(",")
-              .map((url) => `http://localhost:3000/img/${url.trim()}`)
+            .split(",")
+            .map((url) => `http://localhost:3000/img/${url.trim()}`)
           : [],
       };
     });
@@ -215,8 +215,8 @@ const show = (req, res) => {
             (sneaker) => {
               const urls = sneaker.images
                 ? sneaker.images
-                    .split(",")
-                    .map((url) => `http://localhost:3000/img/${url}`)
+                  .split(",")
+                  .map((url) => `http://localhost:3000/img/${url}`)
                 : [];
 
               // Rimuovi campo originale se vuoi (opzionale)
@@ -260,8 +260,8 @@ const postPopUp = (req, res) => {
     errors.push({ message: `il nome non può contenere più di caratteri(numero attuale caratteri: ${name.length})` });
   }
   if (typeof name !== 'string') {
-  errors.push({ message: "Il campo nome deve essere una stringa" });
-}
+    errors.push({ message: "Il campo nome deve essere una stringa" });
+  }
 
   if (!surname) {
     errors.push({ message: "controlla i dati immessi nel campo cognome" });
@@ -273,8 +273,8 @@ const postPopUp = (req, res) => {
     errors.push({ message: `il cognome non può contenere più di caratteri(numero attuale caratteri: ${name.length})` });
   }
   if (typeof surname !== 'string') {
-  errors.push({ message: "Il campo cognome deve essere una stringa" });
-}
+    errors.push({ message: "Il campo cognome deve essere una stringa" });
+  }
 
   if (!email) {
     errors.push({ message: "controlla i dati immessi nel campo e-mail" });
@@ -286,8 +286,8 @@ const postPopUp = (req, res) => {
     errors.push({ message: `il e-mail non può contenere più di caratteri(numero attuale caratteri: ${name.length})` });
   }
   if (typeof email !== 'string') {
-  errors.push({ message: "Il campo e-mail deve essere una stringa" });
-}
+    errors.push({ message: "Il campo e-mail deve essere una stringa" });
+  }
   if (errors.length) {
     return res.status(400).json(errors);
   }
@@ -331,8 +331,8 @@ const postCheckOut = (req, res) => {
     errors.push({ message: `il nome non può contenere più di caratteri(numero attuale caratteri: ${name.length})` });
   }
   if (typeof name !== 'string') {
-  errors.push({ message: "Il campo nome deve essere una stringa" });
-}
+    errors.push({ message: "Il campo nome deve essere una stringa" });
+  }
   if (surname.length < 2) {
     errors.push({ message: `il cognome non può contenere meno di 2 caratteri(numero attuale caratteri: ${name.length})` });
   }
@@ -340,32 +340,32 @@ const postCheckOut = (req, res) => {
     errors.push({ message: `il cognome non può contenere più di caratteri(numero attuale caratteri: ${name.length})` });
   }
   if (typeof surname !== 'string') {
-  errors.push({ message: "Il campo cognome deve essere una stringa" });
-}
+    errors.push({ message: "Il campo cognome deve essere una stringa" });
+  }
   if (!address)
     errors.push({
       message: "controlla i dati immessi nel campo dell'indirizzo",
     });
-     if (address.length < 2) {
+  if (address.length < 2) {
     errors.push({ message: `L'indirizzo non può contenere meno di 2 caratteri(numero attuale caratteri: ${name.length})` });
   }
   if (address.length > 100) {
     errors.push({ message: `L'indirizzo non può contenere più di caratteri(numero attuale caratteri: ${name.length})` });
   }
   if (typeof address !== 'string') {
-  errors.push({ message: "Il campo dell'indirizzo deve essere una stringa" });
-}
+    errors.push({ message: "Il campo dell'indirizzo deve essere una stringa" });
+  }
   if (!phone)
     errors.push({ message: "controlla i dati immessi nel campo numero di telefono" });
-  if (phone.length < 8 )
+  if (phone.length < 8)
     errors.push({ message: `il numero di telefono non può contenere meno di 8 caratteri(numero attuale di caratteri: ${phone.length}` });
-  if (phone.length > 30 )
+  if (phone.length > 30)
     errors.push({ message: `il numero di telefono non può contenere più di caratteri(numero attuale di caratteri: ${phone.length}` });
   if (!email)
     errors.push({ message: "controlla i dati immessi nel campo e-mail" });
-  if (email.length < 8 )
+  if (email.length < 8)
     errors.push({ message: `l'email non può contenere meno di 8 caratteri(numero attuale di caratteri: ${email.length}` });
-  if (email.length > 30 )
+  if (email.length > 30)
     errors.push({ message: `l'email non può contenere più di caratteri(numero attuale di caratteri: ${email.length}` });
   if (!Array.isArray(items) || !items.length) {
     errors.push({ message: "Il carrello è vuoto." });
