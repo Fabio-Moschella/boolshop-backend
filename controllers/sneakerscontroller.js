@@ -80,15 +80,40 @@ const indexLatest = (req, res) => {
 // SHOW ULTIMO ARRIVO PER LA HERO
 
 const latestForHero = (req, res) => {
-  const sqlLatestSneakerForHero = `SELECT *
-FROM sneakers
-ORDER BY date_of_arrival DESC 
-LIMIT 1`;
+  const sqlLatestSneakerForHero = `
+    SELECT 
+      s.*, 
+      GROUP_CONCAT(i.url ORDER BY i.id_image ASC) AS image_urls
+    FROM 
+      sneakers s
+    JOIN 
+      images i ON s.id_sneaker = i.id_sneaker
+    GROUP BY
+      s.id_sneaker
+    ORDER BY 
+      s.date_of_arrival DESC 
+    LIMIT 1;
+  `;
+
   connection.query(sqlLatestSneakerForHero, (err, results) => {
-    if (err) return res.status(500).json({ error: "Database query failed" });
+    if (err) {
+      console.error("Errore nella query al database:", err);
+      return res.status(500).json({ error: "Errore nella query al database" });
+    }
+
+    const sneakerWithImages = results.map((sneaker) => {
+      return {
+        ...sneaker,
+        image_urls: sneaker.image_urls
+          ? sneaker.image_urls
+              .split(",")
+              .map((url) => `http://localhost:3000/img/${url.trim()}`)
+          : [],
+      };
+    });
 
     res.json({
-      results,
+      results: sneakerWithImages,
     });
   });
 };
