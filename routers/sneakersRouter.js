@@ -33,4 +33,6 @@ sneaker.post(
   sneakersController.postCheckOut
 );
 
+// ricerca
+sneaker.get("", sneakersController.search);
 module.exports = sneaker;

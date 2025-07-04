@@ -494,6 +494,24 @@ const postCheckOut = (req, res) => {
   );
 };
 
+const search = (req, res) => {
+  const searchParam = req.query.search;
+  
+  const search = `%${searchParam}%`;
+
+  const querySearch = `
+    SELECT * FROM sneakers
+    WHERE sneakers.model LIKE ? OR sneakers.brand LIKE ?
+  `;
+
+
+  connection.query(querySearch, [search, search], (err, searchResults) => {
+    if (err) return res.status(500).json({err: "Database query failed"});
+        if (!searchResults.length) res.json("Sneaker not found");
+
+        return res.json(searchResults)
+  })
+}
 module.exports = {
   indexAll,
   indexLatest,
@@ -502,4 +520,5 @@ module.exports = {
   show,
   postPopUp,
   postCheckOut,
+  search
 };
