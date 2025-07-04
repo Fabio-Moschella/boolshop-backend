@@ -19,6 +19,7 @@ const indexAll = (req, res) => {
     FROM sneakers s
     LEFT JOIN images i ON s.id_sneaker = i.id_sneaker
     GROUP BY s.id_sneaker`;
+
   connection.query(sqlSneaker, (err, results) => {
     if (err) return res.status(500).json({ error: "Database query failed" });
 
@@ -27,9 +28,17 @@ const indexAll = (req, res) => {
       images: sneaker.images ? sneaker.images.split(",") : [],
     }));
 
-    res.json({ results: sneakersWithImages });
+    const sneakersWithUrls = sneakersWithImages.map((sneaker) => ({
+      ...sneaker,
+      images: sneaker.images.map(
+        (img) => `http://localhost:3000/sneakers/img/${img}`
+      ),
+    }));
+
+    res.json(sneakersWithUrls);
   });
 };
+
 // INDEX ULTIMI 5 ARRIVI
 
 const indexLatest = (req, res) => {
