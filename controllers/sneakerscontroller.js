@@ -40,10 +40,9 @@ const indexAll = (req, res) => {
 // INDEX ULTIMI 5 ARRIVI
 
 const indexLatest = (req, res) => {
-  const sqlLatestSneaker = `
-    SELECT 
+  const sqlLatestSneaker = ` SELECT 
       s.*, 
-      GROUP_CONCAT(i.url ORDER BY i.id_image ASC) AS image_urls
+      GROUP_CONCAT(i.url ORDER BY i.id_image ASC) AS images
     FROM 
       sneakers s
     JOIN 
@@ -52,20 +51,19 @@ const indexLatest = (req, res) => {
       s.id_sneaker
     ORDER BY 
       s.date_of_arrival DESC 
-    LIMIT 5;
-  `;
-
+    LIMIT 5;`;
   connection.query(sqlLatestSneaker, (err, results) => {
     if (err) {
-      console.error("Errore nella query al database:", err);
+      console.error("Errore nella query al database:", err); // Logga l'errore per il debugging
       return res.status(500).json({ error: "Errore nella query al database" });
     }
 
+    // Elabora i risultati per trasformare la stringa di image_urls separata da virgole in un array
     const sneakersWithImages = results.map((sneaker) => {
       return {
         ...sneaker,
-        image_urls: sneaker.image_urls
-          ? sneaker.image_urls
+        images: sneaker.images
+          ? sneaker.images
               .split(",")
               .map((url) => `http://localhost:3000/img/${url.trim()}`)
           : [],
@@ -83,7 +81,7 @@ const latestForHero = (req, res) => {
   const sqlLatestSneakerForHero = `
     SELECT 
       s.*, 
-      GROUP_CONCAT(i.url ORDER BY i.id_image ASC) AS image_urls
+      GROUP_CONCAT(i.url ORDER BY i.id_image ASC) AS images
     FROM 
       sneakers s
     JOIN 
@@ -104,8 +102,8 @@ const latestForHero = (req, res) => {
     const sneakerWithImages = results.map((sneaker) => {
       return {
         ...sneaker,
-        image_urls: sneaker.image_urls
-          ? sneaker.image_urls
+        images: sneaker.images
+          ? sneaker.images
               .split(",")
               .map((url) => `http://localhost:3000/img/${url.trim()}`)
           : [],
@@ -150,16 +148,14 @@ const indexCheapest = (req, res) => {
       const imageField = Object.keys(sneaker).find((k) =>
         k.startsWith("GROUP_CONCAT")
       );
-      const imageUrls = sneaker[imageField]
-        ? sneaker[imageField].split(",")
-        : [];
+      const images = sneaker[imageField] ? sneaker[imageField].split(",") : [];
 
       // Rimuovi il campo GROUP_CONCAT dalla risposta
       delete sneaker[imageField];
 
       return {
         ...sneaker,
-        image_urls: imageUrls.map((url) => `http://localhost:3000/img/${url}`),
+        images: images.map((url) => `http://localhost:3000/img/${url}`),
       };
     });
 
@@ -176,7 +172,7 @@ const show = (req, res) => {
   const sqlRelatedSneakers = `
     SELECT 
       sneakers.*, 
-      GROUP_CONCAT(images.url ORDER BY images.id_image ASC) AS image_urls
+      GROUP_CONCAT(images.url ORDER BY images.id_image ASC) AS images
     FROM 
       sneakers
     JOIN 
@@ -217,18 +213,18 @@ const show = (req, res) => {
           // ➕ Aggiunge http://localhost:3000/img/ a ogni URL delle correlate
           const processedRelatedSneakers = relatedSneakersResults.map(
             (sneaker) => {
-              const urls = sneaker.image_urls
-                ? sneaker.image_urls
+              const urls = sneaker.images
+                ? sneaker.images
                     .split(",")
                     .map((url) => `http://localhost:3000/img/${url}`)
                 : [];
 
               // Rimuovi campo originale se vuoi (opzionale)
-              delete sneaker.image_urls;
+              delete sneaker.images;
 
               return {
                 ...sneaker,
-                image_urls: urls,
+                images: urls,
               };
             }
           );
