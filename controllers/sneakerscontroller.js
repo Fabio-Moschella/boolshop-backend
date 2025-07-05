@@ -188,7 +188,15 @@ const indexCheapest = (req, res) => {
 const show = (req, res) => {
   const slug = decodeURIComponent(req.params.slug);
 
-  const sqlCurrentSneaker = "SELECT * FROM sneakers WHERE slug = ?";
+  const sqlCurrentSneaker = `
+  SELECT sneakers.*,
+  JSON_ARRAYAGG(sizes.size) AS sizes
+  FROM sneakers
+  inner join sizes
+  on sneakers.id_sneaker = sizes.id_sneaker
+  WHERE sneakers.slug = ?
+  GROUP BY 
+  sneakers.id_sneaker`;
   const sqlImages = "SELECT url FROM images WHERE id_sneaker = ?";
   const sqlRelatedSneakers = `
     SELECT 
