@@ -4,7 +4,26 @@ const { sendEmail } = require("../services/emailService.js");
 // INDEX TUTTE LE SCARPE
 
 const indexAll = (req, res) => {
-  const sqlSneaker = `
+  const searchParam = req.query.search;
+  
+  let querySearch;
+  let queryParams;
+
+  if (searchParam) {
+    const search = `%${searchParam}%`;
+    querySearch = `
+    SELECT s.*, 
+    GROUP_CONCAT(i.url) AS images
+    FROM sneakers s
+    LEFT JOIN images i ON s.id_sneaker = i.id_sneaker
+    WHERE model LIKE ? OR brand LIKE ?
+    GROUP BY s.id_sneaker
+  `;
+
+  queryParams = [search, search];
+  }
+  else {
+    querySearch = `
     SELECT 
       s.id_sneaker,
       s.brand,
@@ -19,8 +38,10 @@ const indexAll = (req, res) => {
     FROM sneakers s
     LEFT JOIN images i ON s.id_sneaker = i.id_sneaker
     GROUP BY s.id_sneaker`;
+  }
+  
 
-  connection.query(sqlSneaker, (err, results) => {
+  connection.query(querySearch, queryParams, (err, results) => {
     if (err) return res.status(500).json({ error: "Database query failed" });
 
     const sneakersWithImages = results.map((sneaker) => ({
@@ -494,24 +515,6 @@ const postCheckOut = (req, res) => {
   );
 };
 
-const search = (req, res) => {
-  const searchParam = req.query.search;
-  
-  const search = `%${searchParam}%`;
-
-  const querySearch = `
-    SELECT * FROM sneakers
-    WHERE sneakers.model LIKE ? OR sneakers.brand LIKE ?
-  `;
-
-
-  connection.query(querySearch, [search, search], (err, searchResults) => {
-    if (err) return res.status(500).json({err: "Database query failed"});
-        if (!searchResults.length) res.json("Sneaker not found");
-
-        return res.json(searchResults)
-  })
-}
 module.exports = {
   indexAll,
   indexLatest,
@@ -520,5 +523,4 @@ module.exports = {
   show,
   postPopUp,
   postCheckOut,
-  search
 };

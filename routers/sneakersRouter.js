@@ -4,7 +4,7 @@ const sneakersController = require("../controllers/sneakerscontroller.js");
 
 // ROUTE LISTA DELLE SCARPE(INDEXALL)
 
-sneaker.get("", sneakersController.indexAll);
+sneaker.get("/", sneakersController.indexAll);
 
 // ROUTE LISTA ULTIMI 5 ARRIVI(INDEXLATEST)
 
@@ -33,6 +33,4 @@ sneaker.post(
   sneakersController.postCheckOut
 );
 
-// ricerca
-sneaker.get("", sneakersController.search);
 module.exports = sneaker;
