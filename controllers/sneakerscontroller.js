@@ -190,7 +190,10 @@ const show = (req, res) => {
 
   const sqlCurrentSneaker = `
   SELECT sneakers.*,
-  JSON_ARRAYAGG(sizes.size) AS sizes
+  JSON_ARRAYAGG(JSON_OBJECT(
+      'size', sizes.size,
+      'id_size', sizes.id_size
+    )) AS sizes
   FROM sneakers
   inner join sizes
   on sneakers.id_sneaker = sizes.id_sneaker
