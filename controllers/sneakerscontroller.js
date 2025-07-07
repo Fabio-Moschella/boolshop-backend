@@ -91,7 +91,7 @@ const indexLatest = (req, res) => {
   FROM sneakers
     ORDER BY 
       sneakers.date_of_arrival DESC 
-    LIMIT 5;`;
+    LIMIT 6;`;
   connection.query(sqlLatestSneaker, (err, results) => {
     if (err) {
       console.error("Errore nella query al database:", err); // Logga l'errore per il debugging
@@ -176,7 +176,7 @@ const indexCheapest = (req, res) => {
   ) AS images
   FROM sneakers
     ORDER BY sneakers.price ASC
-    LIMIT 5;
+    LIMIT 6;
   `;
 
   connection.query(sqlCheapestSneaker, (err, results) => {
