@@ -5,7 +5,7 @@ const { sendEmail } = require("../services/emailService.js");
 
 const indexAll = (req, res) => {
   const searchParam = req.query.search;
-  
+
   let querySearch;
   let queryParams;
 
@@ -20,7 +20,7 @@ const indexAll = (req, res) => {
     GROUP BY s.id_sneaker
   `;
 
-  queryParams = [search, search];
+    queryParams = [search, search];
   }
   else {
     querySearch = `
@@ -39,7 +39,7 @@ const indexAll = (req, res) => {
     LEFT JOIN images i ON s.id_sneaker = i.id_sneaker
     GROUP BY s.id_sneaker`;
   }
-  
+
 
   connection.query(querySearch, queryParams, (err, results) => {
     if (err) return res.status(500).json({ error: "Database query failed" });
@@ -393,6 +393,9 @@ const postCheckOut = (req, res) => {
     errors.push({ message: `il numero di telefono non può contenere meno di 8 caratteri(numero attuale di caratteri: ${phone.length}` });
   if (phone.length > 30)
     errors.push({ message: `il numero di telefono non può contenere più di caratteri(numero attuale di caratteri: ${phone.length}` });
+  if (!/^\+?[0-9]+$/.test(phone)) {
+    errors.push({ message: "Il campo del numero di telefono può includere solo numeri" });
+  }
   if (!email)
     errors.push({ message: "controlla i dati immessi nel campo e-mail" });
   if (email.length < 8)
