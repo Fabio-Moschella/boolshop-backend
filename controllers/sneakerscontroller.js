@@ -185,18 +185,29 @@ const indexCheapest = (req, res) => {
       return res.status(500).json({ error: "Errore nella query al database" });
     }
 
+    // const sneakersWithImages = results.map((sneaker) => {
+    //   const imageField = Object.keys(sneaker).find((k) =>
+    //     k.startsWith("GROUP_CONCAT")
+    //   );
+    //   const images = sneaker[imageField] ? sneaker[imageField].split(",") : [];
+
+    //   // Rimuovi il campo GROUP_CONCAT dalla risposta
+    //   delete sneaker[imageField];
+
+    //   return {
+    //     ...sneaker,
+    //     images: images.map((url) => `http://localhost:3000/img/${url}`),
+    //   };
+    // });
+
     const sneakersWithImages = results.map((sneaker) => {
-      const imageField = Object.keys(sneaker).find((k) =>
-        k.startsWith("GROUP_CONCAT")
-      );
-      const images = sneaker[imageField] ? sneaker[imageField].split(",") : [];
-
-      // Rimuovi il campo GROUP_CONCAT dalla risposta
-      delete sneaker[imageField];
-
       return {
         ...sneaker,
-        images: images.map((url) => `http://localhost:3000/img/${url}`),
+        images: sneaker.images
+          ? sneaker.images
+            .split(",")
+            .map((url) => `http://localhost:3000/img/${url.trim()}`)
+          : [],
       };
     });
 
