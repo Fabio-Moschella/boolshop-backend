@@ -510,7 +510,8 @@ const postCheckOut = (req, res) => {
               const userHtml = `
             <h2>Ciao ${name} ${surname},</h2>
             <p>Grazie per il tuo ordine!</p>
-            <p> ${itemsHtml}</p>`;
+            <p> ${itemsHtml}</p>
+            <p>Totale ordine: <strong>€${total_price.toFixed(2)}</strong></p>`;
               sendEmail(email, userSubject, userText, userHtml, () => {
                 return res.status(201).json({
                   message: "Ordine completato con successo",
