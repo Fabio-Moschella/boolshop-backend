@@ -12,32 +12,44 @@ const indexAll = (req, res) => {
   if (searchParam) {
     const search = `%${searchParam}%`;
     querySearch = `
-    SELECT s.*, 
-    GROUP_CONCAT(i.url) AS images
-    FROM sneakers s
-    LEFT JOIN images i ON s.id_sneaker = i.id_sneaker
-    WHERE model LIKE ? OR brand LIKE ?
-    GROUP BY s.id_sneaker
+    SELECT 
+  sneakers.*,
+  (
+    SELECT JSON_ARRAYAGG(JSON_OBJECT(
+      'size', sizes.size,
+      'id_size', sizes.id_size
+    ))
+    FROM sizes 
+    WHERE sizes.id_sneaker = sneakers.id_sneaker
+  ) AS sizes,
+  (
+    SELECT GROUP_CONCAT(images.url)  
+    FROM images
+    WHERE images.id_sneaker = sneakers.id_sneaker
+  ) AS images
+FROM sneakers
+WHERE brand LIKE ? OR model LIKE ?
   `;
 
     queryParams = [search, search];
   }
   else {
     querySearch = `
-    SELECT 
-      s.id_sneaker,
-      s.brand,
-      s.model,
-      s.slug,
-      s.description,
-      s.color,
-      s.price,
-      s.gender,
-      s.date_of_arrival,
-      GROUP_CONCAT(i.url) AS images
-    FROM sneakers s
-    LEFT JOIN images i ON s.id_sneaker = i.id_sneaker
-    GROUP BY s.id_sneaker`;
+   SELECT DISTINCT sneakers.*,
+  (
+  SELECT JSON_ARRAYAGG(JSON_OBJECT(
+      'size', sizes.size,
+      'id_size', sizes.id_size
+    ))
+    FROM sizes 
+    WHERE sizes.id_sneaker = sneakers.id_sneaker
+    ) AS sizes,
+  (
+  SELECT GROUP_CONCAT(images.url)  
+  FROM images
+  WHERE images.id_sneaker = sneakers.id_sneaker
+  ) AS images
+  FROM sneakers`;
   }
 
 
@@ -61,17 +73,24 @@ const indexAll = (req, res) => {
 // INDEX ULTIMI 5 ARRIVI
 
 const indexLatest = (req, res) => {
-  const sqlLatestSneaker = ` SELECT 
-      s.*, 
-      GROUP_CONCAT(i.url ORDER BY i.id_image ASC) AS images
-    FROM 
-      sneakers s
-    JOIN 
-      images i ON s.id_sneaker = i.id_sneaker
-    GROUP BY
-      s.id_sneaker
+  const sqlLatestSneaker = ` 
+  SELECT DISTINCT sneakers.*,
+  (
+  SELECT JSON_ARRAYAGG(JSON_OBJECT(
+      'size', sizes.size,
+      'id_size', sizes.id_size
+    ))
+    FROM sizes 
+    WHERE sizes.id_sneaker = sneakers.id_sneaker
+    ) AS sizes,
+  (
+  SELECT GROUP_CONCAT(images.url)  
+  FROM images
+  WHERE images.id_sneaker = sneakers.id_sneaker
+  ) AS images
+  FROM sneakers
     ORDER BY 
-      s.date_of_arrival DESC 
+      sneakers.date_of_arrival DESC 
     LIMIT 5;`;
   connection.query(sqlLatestSneaker, (err, results) => {
     if (err) {
@@ -141,20 +160,21 @@ const latestForHero = (req, res) => {
 
 const indexCheapest = (req, res) => {
   const sqlCheapestSneaker = `
-    SELECT 
-      sneakers.id_sneaker,
-      sneakers.brand,
-      sneakers.model,
-      sneakers.description,
-      sneakers.color,
-      sneakers.price,
-      sneakers.gender,
-      sneakers.date_of_arrival,
-      sneakers.slug,
-      GROUP_CONCAT(images.url ORDER BY images.id_image ASC) 
-    FROM sneakers
-    JOIN images ON sneakers.id_sneaker = images.id_sneaker
-    GROUP BY sneakers.id_sneaker
+    SELECT DISTINCT sneakers.*,
+  (
+  SELECT JSON_ARRAYAGG(JSON_OBJECT(
+      'size', sizes.size,
+      'id_size', sizes.id_size
+    ))
+    FROM sizes 
+    WHERE sizes.id_sneaker = sneakers.id_sneaker
+    ) AS sizes,
+  (
+  SELECT GROUP_CONCAT(images.url)  
+  FROM images
+  WHERE images.id_sneaker = sneakers.id_sneaker
+  ) AS images
+  FROM sneakers
     ORDER BY sneakers.price ASC
     LIMIT 5;
   `;
