@@ -6,6 +6,8 @@ const { sendEmail } = require("../services/emailService.js");
 const indexAll = (req, res) => {
   const searchParam = req.query.search;
   const orderNameParam = req.query.name;
+  const orderPriceParam = req.query.price;
+  const orderDateParam = req.query.date;
 
   const defaultQuery = `
    SELECT DISTINCT sneakers.*,
@@ -32,6 +34,7 @@ const indexAll = (req, res) => {
     querySearch = `${defaultQuery}  WHERE brand LIKE ? OR model LIKE ?`;
     queryParams = [search, search];
   }
+
   if (orderNameParam) {
     if (searchParam) {
       const search = `%${searchParam}%`;
@@ -42,6 +45,30 @@ const indexAll = (req, res) => {
     else {
       querySearch = `${defaultQuery}  ORDER BY sneakers.brand ${orderNameParam}, 
       sneakers.model ${orderNameParam}`;
+    }
+  }
+
+  else if (orderPriceParam) {
+    if (searchParam) {
+      const search = `%${searchParam}%`;
+      querySearch = `${defaultQuery}  WHERE brand LIKE ? OR model LIKE ?
+      ORDER BY sneakers.price ${orderPriceParam}`;
+      queryParams = [search, search];
+    }
+    else {
+      querySearch = `${defaultQuery}  ORDER BY sneakers.price ${orderPriceParam}`;
+    }
+  }
+  
+  else if (orderDateParam) {
+    if (searchParam) {
+      const search = `%${searchParam}%`;
+      querySearch = `${defaultQuery}  WHERE brand LIKE ? OR model LIKE ?
+      ORDER BY sneakers.date_of_arrival ${orderDateParam}`;
+      queryParams = [search, search];
+    }
+    else {
+      querySearch = `${defaultQuery}  ORDER BY sneakers.date_of_arrival ${orderDateParam}`;
     }
   }
   else {
