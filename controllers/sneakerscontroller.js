@@ -6,35 +6,7 @@ const { sendEmail } = require("../services/emailService.js");
 const indexAll = (req, res) => {
   const searchParam = req.query.search;
 
-  let querySearch;
-  let queryParams;
-
-  if (searchParam) {
-    const search = `%${searchParam}%`;
-    querySearch = `
-    SELECT 
-  sneakers.*,
-  (
-    SELECT JSON_ARRAYAGG(JSON_OBJECT(
-      'size', sizes.size,
-      'id_size', sizes.id_size
-    ))
-    FROM sizes 
-    WHERE sizes.id_sneaker = sneakers.id_sneaker
-  ) AS sizes,
-  (
-    SELECT GROUP_CONCAT(images.url)  
-    FROM images
-    WHERE images.id_sneaker = sneakers.id_sneaker
-  ) AS images
-FROM sneakers
-WHERE brand LIKE ? OR model LIKE ?
-  `;
-
-    queryParams = [search, search];
-  }
-  else {
-    querySearch = `
+  const defaultQuery = `
    SELECT DISTINCT sneakers.*,
   (
   SELECT JSON_ARRAYAGG(JSON_OBJECT(
@@ -50,6 +22,19 @@ WHERE brand LIKE ? OR model LIKE ?
   WHERE images.id_sneaker = sneakers.id_sneaker
   ) AS images
   FROM sneakers`;
+
+  let querySearch;
+  let queryParams;
+
+  if (searchParam) {
+    const search = `%${searchParam}%`;
+    querySearch = `${defaultQuery}  WHERE brand LIKE ? OR model LIKE ?`;
+
+    queryParams = [search, search];
+  }
+  else {
+    querySearch = defaultQuery;
+    queryParams = [];
   }
 
 
