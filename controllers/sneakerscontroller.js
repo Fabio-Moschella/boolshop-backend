@@ -35,7 +35,7 @@ const indexAll = (req, res) => {
     queryParams = [search, search];
   }
 
-  if (orderNameParam) {
+  else if (orderNameParam) {
     if (searchParam) {
       const search = `%${searchParam}%`;
       querySearch = `${defaultQuery}  WHERE brand LIKE ? OR model LIKE ?
