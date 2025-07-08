@@ -5,6 +5,7 @@ const { sendEmail } = require("../services/emailService.js");
 
 const indexAll = (req, res) => {
   const searchParam = req.query.search;
+  const orderNameParam = req.query.name;
 
   const defaultQuery = `
    SELECT DISTINCT sneakers.*,
@@ -29,8 +30,19 @@ const indexAll = (req, res) => {
   if (searchParam) {
     const search = `%${searchParam}%`;
     querySearch = `${defaultQuery}  WHERE brand LIKE ? OR model LIKE ?`;
-
     queryParams = [search, search];
+  }
+  if (orderNameParam) {
+    if (searchParam) {
+      const search = `%${searchParam}%`;
+      querySearch = `${defaultQuery}  WHERE brand LIKE ? OR model LIKE ?
+      ORDER BY sneakers.brand ${orderNameParam}, sneakers.model ${orderNameParam}`;
+      queryParams = [search, search];
+    }
+    else {
+      querySearch = `${defaultQuery}  ORDER BY sneakers.brand ${orderNameParam}, 
+      sneakers.model ${orderNameParam}`;
+    }
   }
   else {
     querySearch = defaultQuery;
