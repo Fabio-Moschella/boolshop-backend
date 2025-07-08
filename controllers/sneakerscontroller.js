@@ -26,8 +26,8 @@ const indexAll = (req, res) => {
   ) AS images
   FROM sneakers`;
 
-  let querySearch;
-  let queryParams;
+  let querySearch = defaultQuery;
+  let queryParams = [];
 
   if (searchParam) {
     const search = `%${searchParam}%`;
@@ -35,7 +35,7 @@ const indexAll = (req, res) => {
     queryParams = [search, search];
   }
 
-  else if (orderNameParam) {
+  if (orderNameParam) {
     if (searchParam) {
       const search = `%${searchParam}%`;
       querySearch = `${defaultQuery}  WHERE brand LIKE ? OR model LIKE ?
@@ -70,10 +70,6 @@ const indexAll = (req, res) => {
     else {
       querySearch = `${defaultQuery}  ORDER BY sneakers.date_of_arrival ${orderDateParam}`;
     }
-  }
-  else {
-    querySearch = defaultQuery;
-    queryParams = [];
   }
 
 
