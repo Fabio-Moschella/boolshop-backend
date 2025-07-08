@@ -235,16 +235,24 @@ const show = (req, res) => {
   const sqlRelatedSneakers = `
     SELECT 
       sneakers.*, 
-      GROUP_CONCAT(images.url ORDER BY images.id_image ASC) AS images
-    FROM 
-      sneakers
-    JOIN 
-      images ON sneakers.id_sneaker = images.id_sneaker
-    WHERE 
-      sneakers.brand = ? AND sneakers.slug != ?
+      ( 
+      SELECT GROUP_CONCAT(images.url) 
+      FROM images
+      WHERE images.id_sneaker = sneakers.id_sneaker
+      ) AS images,
+      ( 
+      SELECT JSON_ARRAYAGG(JSON_OBJECT(
+      'size', sizes.size,
+      'id_size', sizes.id_size
+    ))
+    FROM sizes 
+    WHERE sizes.id_sneaker = sneakers.id_sneaker
+    ) AS sizes
+    FROM sneakers
+    WHERE sneakers.brand = ? AND sneakers.slug != ?
     GROUP BY
       sneakers.id_sneaker
-    LIMIT 5;
+    LIMIT 6;
   `;
 
   connection.query(sqlCurrentSneaker, [slug], (err, currentSneakerResults) => {
